@@ -1,5 +1,7 @@
 from fields import NumericField
 from manage import FormulaCalculation
+# from memory_profiler import profile
+# import time
 
 
 class TestCheckResult:
@@ -70,6 +72,7 @@ class TestAvgFunc:
 
 
 class TestFieldInCommonBlock:
+    # @profile(precision=4)
     def test_two_definitions(self):
         data = [
             NumericField(symbol="@a", value="2", formula="", primary_key=1),
@@ -80,5 +83,7 @@ class TestFieldInCommonBlock:
             NumericField(symbol="@p", value="", formula="avg(@c) +   @b", primary_key=6),
             NumericField(symbol="@p", value="", formula="@d + @p", primary_key=7),
         ]
+        # start_time = time.time()
         result = FormulaCalculation(data).calc()
+        # print(time.time()-start_time)
         assert result == {1: "2", 2: "3", 3: "2", 4: "4", 5:"5", 6:"6", 7:"11"}, f"Неверное решение: {result}"
