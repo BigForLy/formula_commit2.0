@@ -1,4 +1,4 @@
-from typing import Iterable, Set
+from typing import Generator, Iterable, Set
 from functions import FUNC_CALLABLE
 
 
@@ -6,7 +6,7 @@ class ParserManager:
     def __init__(self):
         self.operators = {"+", "-", "*", "/", "(", " ", ",", "<", ">", "=", ")"}  # garbage
 
-    def _parse(self, formula):
+    def _parse(self, formula) -> Generator[str, None, None]:
         param = ""
         for s in formula:
             if s in self.operators:

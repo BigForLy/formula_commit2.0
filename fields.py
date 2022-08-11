@@ -20,7 +20,7 @@ class BaseField(ABC):
         value: int | float | str,
         primary_key: Any,
     ) -> None:
-        self.value = value
+        self.value: int | float | str | Decimal = value
         self.symbol = symbol
         self.formula = formula
         self._value_only = False  # значение является константой
