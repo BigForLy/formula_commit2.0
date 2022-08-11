@@ -1,10 +1,9 @@
-from functions import AvgFunc
+from functions import FUNC_CALLABLE
 
 
 class ParserManager:
     def __init__(self):
         self.__OPERATORS = {"+", "-", "*", "/"}
-        self._func = {"avg": AvgFunc()}
 
     def _parse(self, formula):
         param = ""
@@ -20,7 +19,7 @@ class ParserManager:
             yield param
 
     def is_global_dependency(self, formula):
-        return any([token.lower() in self._func for token in self._parse(formula)])
+        return any([token.lower() in FUNC_CALLABLE for token in self._parse(formula)])
 
     def get_dependency(self, formula):
         return set(token for token in self._parse(formula) if "@" in token)

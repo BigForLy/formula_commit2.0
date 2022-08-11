@@ -1,7 +1,7 @@
 from decimal import Decimal
 import pytest
 
-from functions import AvgFunc
+from functions.functions import AvgFunc
 
 
 @pytest.fixture

@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Any, Set
 import uuid
 from typing import TYPE_CHECKING
-
 from decimal import Decimal
+from functions import FUNC_CALLABLE
 
 if TYPE_CHECKING:
     from calculation import Group
@@ -50,8 +50,7 @@ class BaseField(ABC):
 
     def formula_calculation(self):
         try:
-            from decimal import Decimal
-            self.value = eval(self.formula)
+            self.value = eval(self.formula, {"Decimal": Decimal, **FUNC_CALLABLE})
         except:
             raise
 

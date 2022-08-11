@@ -24,3 +24,7 @@ class Subject:
         for observer in self._observers:
             if modifier != observer:
                 observer.update(self)
+
+    @property
+    def is_observers_empty(self):
+        return False if len(self._observers) else True

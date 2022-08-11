@@ -1,6 +1,11 @@
-/.mypy_cache
-/.pytest_cache
-/.vscode
-/test.py
-/venv
-/__pycache__
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+venv
+
+# VS Code
+.vscode/
