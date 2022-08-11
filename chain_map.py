@@ -1,5 +1,6 @@
 from collections import ChainMap
 from typing import Any, Dict
+from contextlib import contextmanager
 
 
 class DefaultListChainMap(ChainMap):
@@ -10,3 +11,11 @@ class DefaultListChainMap(ChainMap):
             if key not in mapping:
                 mapping[key] = []
             mapping[key].append(value)
+
+    @contextmanager
+    def child(self):
+        yield self.new_child()
+    
+    @contextmanager
+    def parent(self):
+        yield self

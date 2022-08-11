@@ -23,14 +23,16 @@ class DefinitionManager:
             self.add_field(current_field)
 
     def calculation(self):
-        # updated global deque
         global_deque: Deque[BaseField] = deque()
         calc = Calculation()
+
         for definition in self._definitions.values():
-            calc.add_group(definition.local_deque, self.cm_parent.new_child())  # TODO: сделать через with
+            with self.cm_parent.child() as cm:
+                calc.add_group(definition.local_deque, cm)
             global_deque.extend(definition.global_deque)
-        # created global group
-        calc.add_group(global_deque, self.cm_parent)  # TODO: сделать через with
+
+        with self.cm_parent.parent() as cm:
+            calc.add_group(global_deque, cm)
         calc.start()
 
     def get_values(self) -> dict:
