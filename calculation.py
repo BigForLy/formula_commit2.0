@@ -16,9 +16,12 @@ class Calculation:
         while self.group_list:
             group = self.group_list.popleft()
             group.calc()
-            # Проверяем что обсерверы пусты, иначе что-то работает не так
+            # Проверяем что обсерверы пусты, иначе одна из формул оказалась глобальной
             if not group.is_observers_empty:
-                raise ValueError("Расчет подошел к концу, но наблюдатели не пусты")
+                # Если обсерверы были в последней группе, возвращаем ошибку
+                if not len(self.group_list):
+                    raise ValueError("Расчет подошел к концу, но наблюдатели не пусты")
+                self.group_list[-1].dq.extend(group.pop_observers())
 
 
 class Group(Subject):  # Group == Definition

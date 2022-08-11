@@ -25,6 +25,10 @@ class Subject:
             if modifier != observer:
                 observer.update(self)
 
+    def pop_observers(self):
+        yield from self._observers
+        self._observers = []
+
     @property
     def is_observers_empty(self):
         return False if len(self._observers) else True
