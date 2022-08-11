@@ -3,6 +3,7 @@ from typing import Any, Set
 import uuid
 from typing import TYPE_CHECKING
 from decimal import Decimal
+from consts import FIRST_SYMBOL_BY_ELEMENT
 from functions import FUNC_CALLABLE
 
 if TYPE_CHECKING:
@@ -35,15 +36,15 @@ class BaseField(ABC):
         raise NotImplementedError
 
     def create_symbol(self):
-        self.symbol = str(f"@{uuid.uuid4()}")
+        self.symbol = str(f"{FIRST_SYMBOL_BY_ELEMENT}{uuid.uuid4()}")
 
     def update(self, subject: "Group") -> None:
-        self.dependence = subject.parser.get_dependency(self.formula)
+        self.dependence = subject.parser.elements_with_text(self.formula, FIRST_SYMBOL_BY_ELEMENT)
         for token in self.dependence:
             if token in subject.cm:
                 element = subject.cm[token]
                 self.formula = self.formula.replace(token, repr(element))
-        self.dependence = subject.parser.get_dependency(self.formula)
+        self.dependence = subject.parser.elements_with_text(self.formula, FIRST_SYMBOL_BY_ELEMENT)
         if not self.dependence:
             self.formula_calculation()
             subject.calculation_current_field(self)
