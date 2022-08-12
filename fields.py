@@ -45,13 +45,10 @@ class BaseField(ABC):
         for token in self.dependence:
             if token in subject.cm:
                 element = subject.cm[token]
-                self.formula = self.formula.replace(
-                    token,
-                    repr(
-                        element[0]
-                        if isinstance(element, list) and len(element) == 1
-                        else element
-                    ),
+                self.formula = "".join(
+                    subject.parser.replace(
+                        self.formula, token, element, subject.variety
+                    )
                 )
         self.dependence = subject.parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT

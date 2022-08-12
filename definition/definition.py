@@ -1,7 +1,6 @@
 from collections import deque
 from typing import Deque, TYPE_CHECKING
 from parser import ParserManager
-from observer import Subject
 
 if TYPE_CHECKING:
     from fields import BaseField
@@ -14,7 +13,6 @@ class Definition:
         self.parser = ParserManager()
         # fields учавствующие в расчете
         self.local_deque: Deque["BaseField"] = deque()
-        self.global_deque: Deque["BaseField"] = deque()
 
     def add_field(self, current_field: "BaseField"):
         # все значения полей после активации флага становятся константами
@@ -39,9 +37,6 @@ class Definition:
 
     def add_in_deque(self, current_field: "BaseField"):
         if current_field.formula:
-            if self.parser.is_global_dependency(current_field.formula):
-                self.global_deque.append(current_field)
-            else:
-                self.local_deque.append(current_field)
+            self.local_deque.append(current_field)
         else:
             self.local_deque.appendleft(current_field)

@@ -4,6 +4,10 @@ from contextlib import contextmanager
 
 
 class DefaultListChainMap(ChainMap):
+    """
+    Превый элемент хранит значения всех остальных детей
+    """
+
     def __setitem__(self, key, value):
         self.maps[0][key] = value
         if len(self.maps) > 1:
@@ -14,8 +18,8 @@ class DefaultListChainMap(ChainMap):
 
     @contextmanager
     def child(self):
-        yield self.new_child()
-    
+        yield self.new_child(), False
+
     @contextmanager
     def parent(self):
-        yield self
+        yield self, True

@@ -1,5 +1,5 @@
 from collections import deque, ChainMap
-from typing import Deque
+from typing import Deque, Tuple
 from parser import ParserManager
 from fields import BaseField
 from observer import Subject
@@ -9,8 +9,8 @@ class Calculation:
     def __init__(self) -> None:
         self.group_list: Deque[Group] = deque()
 
-    def add_group(self, dq: Deque[BaseField], cm: ChainMap):
-        self.group_list.append(Group(dq, cm))
+    def add_group(self, dq: Deque[BaseField], cm: Tuple[ChainMap, bool]):  # TODO: rename element
+        self.group_list.append(Group(dq, cm[0], cm[1]))
 
     def start(self):
         while self.group_list:
@@ -25,10 +25,11 @@ class Calculation:
 
 
 class Group(Subject):  # Group == Definition
-    def __init__(self, dq: Deque[BaseField], cm: ChainMap) -> None:
+    def __init__(self, dq: Deque[BaseField], cm: ChainMap, variety: bool) -> None:
         self.dq = dq
         self.cm = cm
         self.parser = ParserManager()
+        self.variety = variety
         super().__init__()
 
     def calc(self):
@@ -37,7 +38,9 @@ class Group(Subject):  # Group == Definition
             if current_field.formula:
                 current_field.update(self)
                 if current_field.dependence:
-                    self.attach(current_field)
+                    self.attach(
+                        current_field
+                    )  # TODO: реализовать подписку на конкретные атрибуты
             else:
                 self.calculation_current_field(current_field)
 

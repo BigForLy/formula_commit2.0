@@ -23,16 +23,15 @@ class DefinitionManager:
             self.add_field(current_field)
 
     def calculation(self):
-        global_deque: Deque[BaseField] = deque()
         calc = Calculation()
 
         for definition in self._definitions.values():
             with self.cm_parent.child() as cm:
                 calc.add_group(definition.local_deque, cm)
-            global_deque.extend(definition.global_deque)
 
+        # add global variables
         with self.cm_parent.parent() as cm:
-            calc.add_group(global_deque, cm)
+            calc.add_group(deque(), cm)
         calc.start()
 
     def get_values(self) -> dict:
