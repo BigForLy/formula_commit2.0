@@ -21,15 +21,8 @@ class IfFunc(BaseFunc):
 
     def __call__(self, *args: List[Any]) -> Any:
         assert len(args) == 3
-        condition: str = (
-            args[0]
-            .replace("=", "==")
-            .replace("<==", "<=")
-            .replace(">==", ">=")
-            .replace("<>", "!=")
-        )
+        condition: bool = args[0]
         try:
-            result = eval(condition)
-            return args[1] if result else args[2]
+            return args[1] if condition else args[2]
         except:
             raise ValueError("Синтаксическая ошибка")

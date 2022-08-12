@@ -1,5 +1,5 @@
 from .functions import AvgFunc, IfFunc
-from typing import Dict, Callable
+from typing import Dict
 from .functions import BaseFunc
 
-FUNC_CALLABLE: Dict[str, BaseFunc] = {"avg": AvgFunc(), "if": IfFunc()}
+FUNC_CALLABLE: Dict[str, BaseFunc] = {"avg": AvgFunc(), "if_": IfFunc()}
