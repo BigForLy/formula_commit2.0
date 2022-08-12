@@ -29,7 +29,7 @@ class Group(Subject):  # Group == Definition
         self.dq = dq
         self.cm = cm
         self.parser = ParserManager()
-        self.variety = variety
+        self.variety = variety  # TODO: все та же фабрика костылей
         super().__init__()
 
     def calc(self):

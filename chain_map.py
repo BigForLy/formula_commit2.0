@@ -18,8 +18,8 @@ class DefaultListChainMap(ChainMap):
 
     @contextmanager
     def child(self):
-        yield self.new_child(), False
+        yield self.new_child(), False  # TODO: фабрика костылей
 
     @contextmanager
     def parent(self):
-        yield self, True
+        yield self, True  # TODO: фабрика костылей

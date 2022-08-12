@@ -18,6 +18,7 @@ class ParserManager:
             ">",
             "=",
             ")",
+            "!",
         }  # garbage
 
     def _parse(self, formula) -> Generator[str, None, None]:
