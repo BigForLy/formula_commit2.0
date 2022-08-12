@@ -9,10 +9,27 @@ class BaseFunc:
 
 
 class AvgFunc(BaseFunc):
-    def __init__(self) -> None:
-        super().__init__()
-
     def __call__(self, args: List[Any]) -> Any:
         if len(args):
             return mean(args)
-    
+
+
+class IfFunc(BaseFunc):
+    def __init__(self) -> None:
+        super().__init__()
+        self.is_global = False
+
+    def __call__(self, *args: List[Any]) -> Any:
+        assert len(args) == 3
+        condition: str = (
+            args[0]
+            .replace("=", "==")
+            .replace("<==", "<=")
+            .replace(">==", ">=")
+            .replace("<>", "!=")
+        )
+        try:
+            result = eval(condition)
+            return args[1] if result else args[2]
+        except:
+            raise ValueError("Синтаксическая ошибка")
