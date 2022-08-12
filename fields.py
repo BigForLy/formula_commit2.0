@@ -47,7 +47,7 @@ class BaseField(ABC):
                 element = subject.cm[token]
                 self.formula = "".join(
                     subject.parser.replace(
-                        self.formula, token, element, subject.variety
+                        self.formula, token, element, subject.cm.is_parent()  # TODO
                     )
                 )
         self.dependence = subject.parser.elements_with_text(
