@@ -84,44 +84,49 @@ class TestAvgFunc:
 
 
 class TestIfFunc:
-    def test_one_definitions(self):
+    def test_one_definitions_true(self):
         data = [
             NumericField(symbol="@a", value="2", formula="", primary_key=1),
-            NumericField(symbol="@c", value="2", formula="if(  @a=2,3,4)", primary_key=2),
+            NumericField(symbol="@c", value="2", formula="if(   @a=2,3,4)", primary_key=2),
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "2", 2: "3"}, f"Неверное решение: {result}"
 
-    def test_one_text_definitions(self):
+    def test_one_definitions_false(self):
         data = [
             NumericField(symbol="@a", value="2", formula="", primary_key=1),
-            NumericField(symbol="@a", value="3", formula="", definition_number=1, primary_key=2),
-            NumericField(symbol="@c", formula="avg(@a)", value="2", primary_key=3),
+            NumericField(symbol="@c", value="2", formula="if(   @a<>2,3,4)", primary_key=2),
         ]
         result = FormulaCalculation(data).calc()
-        assert result == {1: "2", 2: "3", 3: "2.5"}, f"Неверное решение: {result}"
+        assert result == {1: "2", 2: "4"}, f"Неверное решение: {result}"
 
     def test_two_definitions(self):
         data = [
             NumericField(symbol="@a", value="2", formula="", primary_key=1),
-            NumericField(symbol="@a", value="3", formula="", definition_number=1, primary_key=2),
-            NumericField(symbol="@c", formula="avg(@a)", value="2", primary_key=3),
+            NumericField(symbol="@c", value="2", formula="if(   @a=2,3,4)", primary_key=2),
+            NumericField(symbol="@a", value="3", formula="", definition_number=1, primary_key=3),
+            NumericField(symbol="@c", value="2", formula="if(   @a=2,3,4)", definition_number=1, primary_key=4),
         ]
         result = FormulaCalculation(data).calc()
-        assert result == {1: "2", 2: "3", 3: "2.5"}, f"Неверное решение: {result}"
+        assert result == {1: "2", 2: "3", 3: "3", 4: "4"}, f"Неверное решение: {result}"
 
-    def test_complex_avg_and_if(self):
+    def test_complex_avg_and_if_false(self):
         data = [
             NumericField(symbol="@a", value="2", formula="", primary_key=1),
-            NumericField(symbol="@b", value="6", formula="", primary_key=2),
-            NumericField(symbol="@c", formula="@a+@b", value="2", primary_key=3),
-            NumericField(symbol="@a", value="3", formula="", definition_number=1, primary_key=4),
-            NumericField(symbol="@b", value="6", formula="", definition_number=1, primary_key=5),
-            NumericField(symbol="@c", formula="@a+@b", value="2", definition_number=1, primary_key=6),
-            NumericField(symbol="@v", formula="avg(@c)", value="", primary_key=7),
+            NumericField(symbol="@a", value="3", formula="", definition_number=1, primary_key=2),
+            NumericField(symbol="@c", value="2", formula="if(   avg(@a)=2,3,4)", definition_number=1, primary_key=3),
         ]
         result = FormulaCalculation(data).calc()
-        assert result == {1: "2", 2: "6", 3: "8", 4: "3", 5: "6", 6: "9", 7: "8.5"}, f"Неверное решение: {result}"
+        assert result == {1: "2", 2: "3", 3: "4"}, f"Неверное решение: {result}"
+
+    def test_complex_avg_and_if_true(self):
+        data = [
+            NumericField(symbol="@a", value="2", formula="", primary_key=1),
+            NumericField(symbol="@a", value="3", formula="", definition_number=1, primary_key=2),
+            NumericField(symbol="@c", value="2", formula="if(   avg(@a)=2.5,3,4)", definition_number=1, primary_key=3),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "2", 2: "3", 3: "3"}, f"Неверное решение: {result}"
 
 
 class TestFieldInCommonBlock:
