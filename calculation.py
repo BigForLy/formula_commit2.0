@@ -9,7 +9,9 @@ class Calculation:
     def __init__(self) -> None:
         self.group_list: Deque[Group] = deque()
 
-    def add_group(self, dq: Deque[BaseField], cm: Tuple[ChainMap, bool]):  # TODO: rename element
+    def add_group(
+        self, dq: Deque[BaseField], cm: Tuple[ChainMap, bool]
+    ):  # TODO: rename element
         self.group_list.append(Group(dq, cm[0], cm[1]))
 
     def start(self):

@@ -20,8 +20,8 @@ class IfFunc(BaseFunc):
         self.is_global = False
 
     def __call__(self, *args: List[Any]) -> Any:
-        assert len(args) == 3
-        condition: bool = args[0]
+        assert len(args) == 3, f"Некоректная формула: {args=}"
+        condition = args[0]
         try:
             return args[1] if condition else args[2]
         except:

@@ -1,6 +1,6 @@
 from collections import deque
 from decimal import Decimal
-from typing import Any, Generator, Set
+from typing import Any, Deque, Generator, Set
 from functions import FUNC_CALLABLE
 
 
@@ -50,7 +50,7 @@ class ParserManager:
                     return
             yield param
 
-        dq = deque()
+        dq: Deque[str] = deque()
         param = ""
         for s in source_text:
             if s in self.operators:
