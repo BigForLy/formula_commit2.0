@@ -9,14 +9,13 @@ from fields import BaseField
 class DefinitionManager:
     def __init__(self) -> None:
         self._definitions: Dict[int, Definition] = defaultdict(Definition)
-        self.__fields: List[BaseField] = []
-        self.deque: Deque[BaseField] = deque()
-        self.cm_parent = DefaultListChainMap()
+        self._fields: List[BaseField] = []
+        self._cm_parent = DefaultListChainMap()
 
     def add_field(self, current_field: BaseField):
         definition = self._definitions[current_field.definition_number]
         definition.add_field(current_field)
-        self.__fields.append(current_field)
+        self._fields.append(current_field)
 
     def separation_fields_by_definitions(self, data: list):
         for current_field in data:
@@ -26,16 +25,16 @@ class DefinitionManager:
         calc = Calculation()
 
         for definition in self._definitions.values():
-            with self.cm_parent.child() as cm:
+            with self._cm_parent.child() as cm:
                 calc.add_group(definition.local_deque, cm)
 
         # add global variables
-        with self.cm_parent.parent() as cm:
+        with self._cm_parent.parent() as cm:
             calc.add_group(deque(), cm)
         calc.start()
 
     def get_values(self) -> dict:
         result = {}
-        for current_field in self.__fields:
+        for current_field in self._fields:
             result.update({current_field.primary_key: str(current_field.value)})
         return result

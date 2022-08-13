@@ -1,13 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import Any, Set
+from typing import Any, Set, TYPE_CHECKING
 import uuid
-from typing import TYPE_CHECKING
 from decimal import Decimal
 from consts import FIRST_SYMBOL_BY_ELEMENT
 from functions import FUNC_CALLABLE
+from parser import ParserManager
 
 if TYPE_CHECKING:
     from calculation import Group
+
+parser = ParserManager()
 
 
 class BaseField(ABC):
@@ -39,18 +41,16 @@ class BaseField(ABC):
         self.symbol = str(f"{FIRST_SYMBOL_BY_ELEMENT}{uuid.uuid4()}")
 
     def update(self, subject: "Group") -> None:
-        self.dependence = subject.parser.elements_with_text(
+        self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
         for token in self.dependence:
             if token in subject.cm:
                 element = subject.cm[token]
                 self.formula = "".join(
-                    subject.parser.replace(
-                        self.formula, token, element, subject.cm.is_parent()  # TODO
-                    )
+                    parser.replace(self.formula, token, element, subject.cm.is_parent())
                 )
-        self.dependence = subject.parser.elements_with_text(
+        self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
         if not self.dependence:
@@ -62,6 +62,15 @@ class BaseField(ABC):
             self.value = eval(self.formula, {"Decimal": Decimal, **FUNC_CALLABLE})
         except:
             raise
+
+    def update_formula(self):
+        self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
+        self.formula = (
+            self.formula.replace("=", "==")
+            .replace("<==", "<=")
+            .replace(">==", ">=")
+            .replace("<>", "!=")
+        )
 
 
 class NumericField(BaseField):

@@ -1,7 +1,6 @@
 from collections import deque
 from typing import Deque
 from chain_map import DefaultListChainMap
-from parser import ParserManager
 from fields import BaseField
 from observer import Subject
 
@@ -29,7 +28,6 @@ class Group(Subject):  # Group == Definition
     def __init__(self, dq: Deque[BaseField], cm: DefaultListChainMap) -> None:
         self.dq = dq
         self.cm = cm
-        self.parser = ParserManager()
         super().__init__()
 
     def calc(self):
