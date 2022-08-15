@@ -23,7 +23,3 @@ def test_correct_bool_field(get_bool_field: BoolField):
 
 def test_correct_numeric_value(get_numeric_field: NumericField):
     assert get_numeric_field.value == Decimal("1.201"), get_numeric_field.value
-
-
-def test_correct_numeric_round(get_numeric_field: NumericField):
-    assert get_numeric_field.value == Decimal("1.201"), get_numeric_field.value

@@ -26,9 +26,10 @@ class BaseField(ABC):
         value: int | float | str,
         primary_key: Any,
         round_to: int = 0,
-        formula_check: str = "",
+        formula_check: str = "",  # TODO
     ) -> None:
         self.value: int | float | str | Decimal = self.convert_value(value)
+        self.round_to = round_to
         self.symbol = symbol
         self.formula = formula
         self._value_only = False  # значение является константой
