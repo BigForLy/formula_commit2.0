@@ -25,6 +25,8 @@ class BaseField(ABC):
         formula: str,
         value: int | float | str,
         primary_key: Any,
+        round_to: int = 0,
+        formula_check: str = "",
     ) -> None:
         self.value: int | float | str | Decimal = self.convert_value(value)
         self.symbol = symbol
