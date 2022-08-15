@@ -13,6 +13,10 @@ parser = ParserManager()
 
 
 class BaseField(ABC):
+    """
+    Базовый класс для поля
+    """
+
     def __init__(
         self,
         *,
@@ -22,13 +26,16 @@ class BaseField(ABC):
         value: int | float | str,
         primary_key: Any,
     ) -> None:
-        self.value: int | float | str | Decimal = value
+        self.value: int | float | str | Decimal = self.convert_value(value)
         self.symbol = symbol
         self.formula = formula
         self._value_only = False  # значение является константой
         self.definition_number = definition_number
         self.dependence: Set[str] = set()
         self.primary_key = primary_key
+
+    def convert_value(self, value):
+        return value
 
     @abstractmethod
     def calc(self):
@@ -74,24 +81,16 @@ class BaseField(ABC):
 
 
 class NumericField(BaseField):
-    def __init__(
-        self,
-        *,
-        definition_number: int = 0,
-        symbol: str,
-        formula: str,
-        value: int | float | str,
-        primary_key: Any,
-    ) -> None:
-        super().__init__(
-            definition_number=definition_number,
-            symbol=symbol,
-            formula=formula,
-            value=value,
-            primary_key=primary_key,
+    """
+    Числовое поле
+    """
+
+    def convert_value(self, value):
+        return (
+            Decimal(value)
+            if value
+            else value  # может поменять на float('inf') / float('nan')
         )
-        if value:  # может поменять на float('inf') / float('nan')
-            self.value: Decimal = Decimal(value)
 
     def calc(self):
         pass
@@ -99,10 +98,18 @@ class NumericField(BaseField):
 
 
 class StringField(BaseField):
+    """
+    Строковое поле
+    """
+
     def calc(self):
         pass
 
 
 class BoolField(BaseField):
+    """
+    Логическое поле
+    """
+
     def calc(self):
         pass
