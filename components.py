@@ -18,6 +18,7 @@ class ConcreteComponentRoundTo(Component):
     """
 
     def accept(self, visitor: "BaseField") -> None:
+        assert isinstance(visitor.value, Decimal)
         is_need_rounding = visitor.value.as_tuple().exponent < visitor.round_to
         round_to_below_zero = visitor.round_to < 0
         match is_need_rounding, round_to_below_zero:
