@@ -1,4 +1,4 @@
-from fields import NumericField
+from fields import BoolField, NumericField
 from manage import FormulaCalculation
 from memory_profiler import profile
 import time
@@ -145,3 +145,18 @@ class TestFieldInCommonBlock:
         result = FormulaCalculation(data).calc()
         print(f"Время: {time.time()-start_time}")
         assert result == {1: "2", 2: "3", 3: "2", 4: "4", 5:"5", 6:"6", 7:"11"}, f"Неверное решение: {result}"
+
+
+class TestAllFieldsCheckIgnore:
+    def test_ResultFind_gost_2477_2014_all_check(self):
+        data = [NumericField(symbol="@m", value="1", definition_number="1", formula="", primary_key="1"),
+                BoolField(symbol="@check_ignore", value="True", definition_number="1", formula="", primary_key="2"),
+                BoolField(symbol="@input_manual", value="False", definition_number="1", formula="", primary_key="3"),
+                NumericField(symbol="@m", value="1", definition_number="2", formula="", primary_key="4"),
+                BoolField(symbol="@check_ignore", value="True", definition_number="2", formula="", primary_key="5"),
+                BoolField(symbol="@input_manual", value="False", definition_number="2", formula="", primary_key="6"),
+
+                NumericField(symbol="@av", formula="avg(@m)", value="", primary_key="7")]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': '1', '2': 'True', '3': 'False', 
+                          '4': '1', '5': 'True', '6': 'False', '7': ''}, f"Неверное решение: {result}"
