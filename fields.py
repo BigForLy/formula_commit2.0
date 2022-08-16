@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Any, Set, TYPE_CHECKING
+from typing import Any, List, Set, TYPE_CHECKING, Type
+from components import Component, ConcreteComponentRoundTo
 import uuid
 from decimal import Decimal
 from consts import FIRST_SYMBOL_BY_ELEMENT
@@ -28,8 +29,12 @@ class BaseField(ABC):
         round_to: int = 0,
         formula_check: str = "",  # TODO
     ) -> None:
-        self.value: int | float | str | Decimal = self.convert_value(value)
-        self.round_to = round_to
+        self._calc_component: List[Type[Component]] = []
+
+        self.value: str | Decimal = self.convert_value(value)
+
+        self._update_round_to(round_to)
+
         self.symbol = symbol
         self.formula = formula
         self._value_only = False  # значение является константой
@@ -37,7 +42,7 @@ class BaseField(ABC):
         self.dependence: Set[str] = set()
         self.primary_key = primary_key
 
-    def convert_value(self, value):
+    def convert_value(self, value) -> str | Decimal:
         return value
 
     @abstractmethod
@@ -82,21 +87,30 @@ class BaseField(ABC):
             .replace("<>", "!=")
         )
 
+    def _update_value_with_component(self):
+        for component in self._calc_component:
+            component().accept(self)
+
+    def _update_round_to(self, round_to):
+        self.round_to = round_to
+        if round_to:
+            self._calc_component.append(ConcreteComponentRoundTo)
+
 
 class NumericField(BaseField):
     """
     Числовое поле
     """
 
-    def convert_value(self, value):
+    def convert_value(self, value) -> str | Decimal:
         return (
-            Decimal(value)
+            Decimal(str(value))
             if value
             else value  # может поменять на float('inf') / float('nan')
         )
 
     def calc(self):
-        pass
+        self._update_value_with_component()
         # self.value = str(self.value)  # TODO: необходимо округлить значение
 
 
