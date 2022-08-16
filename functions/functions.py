@@ -12,6 +12,7 @@ class AvgFunc(BaseFunc):
     def __call__(self, args: List[Any]) -> Any:
         if len(args):
             return mean(args)
+        return ""
 
 
 class IfFunc(BaseFunc):
@@ -24,5 +25,5 @@ class IfFunc(BaseFunc):
         condition = args[0]
         try:
             return args[1] if condition else args[2]
-        except:
-            raise ValueError("Синтаксическая ошибка")
+        except Exception as exc:
+            raise ValueError(f"Синтаксическая ошибка: {exc}") from exc

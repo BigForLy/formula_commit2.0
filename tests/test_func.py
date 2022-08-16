@@ -11,12 +11,12 @@ def avg_func():
 
 class TestAvg:
     def test_empty_args(self, avg_func):
-        assert (result := avg_func([])) == None, result
+        assert (result := avg_func([])) == "", result
 
     def test_four_elements(self, avg_func):
         assert (result := avg_func([1, 2, 3, 4])) == 2.5, result
 
-    def test_three_elements_incorrect(self, avg_func):  # incorrect result
+    def test_three_elements_incorrect(self, avg_func):  # incorrect result, not used int
         assert (result := avg_func([4, 4, 2])) == 3.3333333333333335, result
 
     def test_three_elements(self, avg_func):

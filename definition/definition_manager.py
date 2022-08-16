@@ -1,9 +1,9 @@
-from typing import Deque, Dict, List
-from calculation import Calculation
-from .definition import Definition
+from typing import Dict, List
 from collections import defaultdict, deque
+from calculation import Calculation
 from chain_map import DefaultListChainMap
 from fields import BaseField
+from .definition import Definition
 
 
 class DefinitionManager:
@@ -15,6 +15,7 @@ class DefinitionManager:
     def add_field(self, current_field: BaseField):
         definition = self._definitions[current_field.definition_number]
         definition.add_field(current_field)
+        self._cm_parent[current_field.symbol] = []
         self._fields.append(current_field)
 
     def separation_fields_by_definitions(self, data: list):

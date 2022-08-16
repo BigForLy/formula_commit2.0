@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Set, TYPE_CHECKING, Type
-from components import Component, ConcreteComponentRoundTo
-import uuid
 from decimal import Decimal
+import uuid
+from parser import ParserManager
+from components import Component, ConcreteComponentRoundTo
 from consts import FIRST_SYMBOL_BY_ELEMENT
 from functions import FUNC_CALLABLE
-from parser import ParserManager
 
 if TYPE_CHECKING:
     from calculation import Group
@@ -60,7 +60,7 @@ class BaseField(ABC):
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
         for token in self.dependence:
-            if token in subject.cm:
+            if token in subject.cm.maps[0]:
                 element = subject.cm[token]
                 self.formula = "".join(
                     parser.replace(self.formula, token, element, subject.cm.is_parent())
@@ -75,10 +75,12 @@ class BaseField(ABC):
     def formula_calculation(self):
         try:
             self.value = eval(self.formula, {"Decimal": Decimal, **FUNC_CALLABLE})
-        except:
-            raise
+        except (SystemExit, Exception) as exc:
+            raise ValueError(
+                f"Ошибка в формуле: {self.symbol=}, {self.definition_number}, {self.formula=}"
+            ) from exc
 
-    def update_formula(self):
+    def convert_to_python_formula(self):
         self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
         self.formula = (
             self.formula.replace("=", "==")
@@ -111,7 +113,6 @@ class NumericField(BaseField):
 
     def calc(self):
         self._update_value_with_component()
-        # self.value = str(self.value)  # TODO: необходимо округлить значение
 
 
 class StringField(BaseField):

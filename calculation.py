@@ -19,7 +19,7 @@ class Calculation:
             # Проверяем что обсерверы пусты, иначе одна из формул оказалась глобальной
             if not group.is_observers_empty:
                 # Если обсерверы были в последней группе, возвращаем ошибку
-                if not len(self.group_list):
+                if not self.group_list:
                     raise ValueError("Расчет подошел к концу, но наблюдатели не пусты")
                 self.group_list[-1].dq.extend(group.pop_observers())
 

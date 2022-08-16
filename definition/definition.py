@@ -37,7 +37,7 @@ class Definition:
 
     def add_in_deque(self, current_field: "BaseField"):
         if current_field.formula:
-            current_field.update_formula()
+            current_field.convert_to_python_formula()
             self.local_deque.append(current_field)
         else:
             self.local_deque.appendleft(current_field)
