@@ -52,3 +52,14 @@ class TestIf:
 
     def test_not_equal_func(self, if_func):
         assert (result := if_func(2 != 2, 2, 1)) == 1, result
+
+
+class TestSum:
+    def test_empty_args(self):
+        assert (result := sum([])) == 0, result
+
+    def test_one_arg(self):
+        assert (result := sum([Decimal(1)])) == Decimal(1), result
+
+    def test_many_args(self):
+        assert (result := sum([Decimal(1), Decimal(1)])) == Decimal(2), result
