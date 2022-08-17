@@ -2,7 +2,7 @@ from fields import StringField
 from manage import FormulaCalculation
 
 
-class TestGost3242_79Test:
+class TestGost3242_79:
 
     def test_Gost3242_79_v1(self):
         data = [
