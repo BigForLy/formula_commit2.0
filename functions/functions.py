@@ -1,5 +1,5 @@
 from __future__ import with_statement
-from typing import Any, List
+from typing import Any, List, Tuple
 from statistics import mean
 
 
@@ -12,7 +12,7 @@ class AvgFunc(BaseFunc):
     def __call__(self, args: List[Any]) -> Any:
         if len(args):
             return mean(args)
-        return ""
+        return 0
 
 
 class IfFunc(BaseFunc):
@@ -20,10 +20,18 @@ class IfFunc(BaseFunc):
         super().__init__()
         self.is_global = False
 
-    def __call__(self, *args: List[Any]) -> Any:
+    def __call__(self, *args: Tuple[Any]) -> Any:
         assert len(args) == 3, f"Некоректная формула: {args=}"
         condition = args[0]
-        try:
-            return args[1] if condition else args[2]
-        except Exception as exc:
-            raise ValueError(f"Синтаксическая ошибка: {exc}") from exc
+        return args[1] if condition else args[2]
+
+
+class OnlyFunc(BaseFunc):
+    def __call__(self, *args: Tuple[Any]) -> Any:
+        assert len(args) == 2 or len(args) == 3, f"Некоректная формула: {args=}"
+        if not args[0]:
+            return 0
+        condition = len(set(args[0])) == 1
+        success_result = args[0][0] if len(args) == 2 else args[1]
+        failed_result = args[1] if len(args) == 2 else args[2]
+        return success_result if condition else failed_result
