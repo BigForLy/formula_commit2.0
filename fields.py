@@ -75,6 +75,9 @@ class BaseField(ABC):
     def formula_calculation(self):
         try:
             self.value = eval(self.formula, {"Decimal": Decimal, **FUNC_CALLABLE})
+        except NameError as exc:
+            # Обрабатываем исключение для StringField
+            self.value = self.formula
         except (SystemExit, Exception) as exc:
             raise ValueError(
                 f"Ошибка в формуле: {self.symbol=}, {self.definition_number}, {self.formula=}"
