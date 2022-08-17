@@ -1,7 +1,7 @@
 from decimal import Decimal
 import pytest
 from contextlib import suppress
-from functions.functions import AvgFunc, IfFunc
+from functions.functions import AvgFunc, IfFunc, OnlyFunc
 
 
 @pytest.fixture
@@ -11,7 +11,7 @@ def avg_func():
 
 class TestAvg:
     def test_empty_args(self, avg_func):
-        assert (result := avg_func([])) == "", result
+        assert (result := avg_func([])) == 0, result
 
     def test_four_elements(self, avg_func):
         assert (result := avg_func([1, 2, 3, 4])) == 2.5, result
@@ -63,3 +63,25 @@ class TestSum:
 
     def test_many_args(self):
         assert (result := sum([Decimal(1), Decimal(1)])) == Decimal(2), result
+
+
+@pytest.fixture
+def only_func():
+    return OnlyFunc()
+
+
+class TestOnly:
+    def test_empty_args(self, only_func):
+        assert (result := only_func([], "No")) == 0, result
+
+    def test_two_args_success(self, only_func):
+        assert (result := only_func([1, 1, 1], "No")) == 1, result
+
+    def test_two_args_failture(self, only_func):
+        assert (result := only_func([1, 1, 2], "No")) == "No", result
+
+    def test_three_args_success(self, only_func):
+        assert (result := only_func([1, 1, 1], "Yes", "No")) == "Yes", result
+
+    def test_three_args_failture(self, only_func):
+        assert (result := only_func([1, 1, 1, 2], "Yes", "No")) == "No", result

@@ -159,4 +159,4 @@ class TestAllFieldsCheckIgnore:
                 NumericField(symbol="@av", formula="avg(@m)", value="", primary_key="7")]
         result = FormulaCalculation(data).calc()
         assert result == {'1': '1', '2': 'True', '3': 'False', 
-                          '4': '1', '5': 'True', '6': 'False', '7': ''}, f"Неверное решение: {result}"
+                          '4': '1', '5': 'True', '6': 'False', '7': '0'}, f"Неверное решение: {result}"  # '7' == ''
