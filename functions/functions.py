@@ -35,3 +35,8 @@ class OnlyFunc(BaseFunc):
         success_result = args[0][0] if len(args) == 2 else args[1]
         failed_result = args[1] if len(args) == 2 else args[2]
         return success_result if condition else failed_result
+
+
+class CountFunc(BaseFunc):
+    def __call__(self, arg: Any) -> Any:
+        return len(arg)

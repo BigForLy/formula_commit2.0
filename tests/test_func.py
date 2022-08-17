@@ -1,7 +1,7 @@
 from decimal import Decimal
 import pytest
 from contextlib import suppress
-from functions.functions import AvgFunc, IfFunc, OnlyFunc
+from functions import AvgFunc, IfFunc, OnlyFunc, CountFunc
 
 
 @pytest.fixture
@@ -85,3 +85,16 @@ class TestOnly:
 
     def test_three_args_failture(self, only_func):
         assert (result := only_func([1, 1, 1, 2], "Yes", "No")) == "No", result
+
+
+@pytest.fixture
+def count_func():
+    return CountFunc()
+
+
+class TestCount:
+    def test_empty_args(self, count_func):
+        assert (result := count_func([])) == 0, result
+
+    def test_three_args(self, count_func):
+        assert (result := count_func([1, 1, 2])) == 3, result
