@@ -1,5 +1,6 @@
 from __future__ import annotations
 from decimal import Decimal
+from typing import Any, Tuple
 
 
 class MDecimal(Decimal):
@@ -42,6 +43,15 @@ class MDecimal(Decimal):
         if isinstance(other, float):
             return MDecimal(super().__rtruediv__(MDecimal(str(other))))
         return MDecimal(super().__rtruediv__(other))
+
+    def __round__(self, n):
+        return MDecimal(super().__round__(n))
+
+    def __pow__(self, *args: Tuple[Any]) -> MDecimal:
+        return MDecimal(super().__pow__(*args))
+
+    def quantize(self, *args: Tuple[Any]) -> MDecimal:
+        return MDecimal(super().quantize(*args))
 
     def __repr__(self) -> str:
         return f"M{super().__repr__()}"
