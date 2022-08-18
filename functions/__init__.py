@@ -1,4 +1,12 @@
-from .functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc, ReplaceFunc
+from .functions import (
+    AvgFunc,
+    IfFunc,
+    OnlyFunc,
+    CountFunc,
+    SumFunc,
+    ReplaceFunc,
+    SqrtFunc,
+)
 from typing import Dict
 from .functions import BaseFunc
 
@@ -9,4 +17,5 @@ FUNC_CALLABLE: Dict[str, BaseFunc] = {
     "count": CountFunc(),
     "sum": SumFunc(),
     "replace": ReplaceFunc(),
+    "sqrt": SqrtFunc(),
 }

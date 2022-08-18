@@ -3,6 +3,7 @@ from typing import Any, List, Tuple
 from decimal_ import MDecimal
 from statistics import mean
 from consts import null
+from math import sqrt
 
 
 def check_nullable(func):
@@ -60,6 +61,10 @@ class SumFunc(BaseFunc):
 
 
 class ReplaceFunc(BaseFunc):
+    def __init__(self) -> None:
+        super().__init__()
+        self.is_global = False
+
     @check_nullable
     def __call__(self, *args: Tuple[str]) -> Any:
         assert len(args) == 3, f"Некоректная формула: {args=}"
@@ -67,3 +72,14 @@ class ReplaceFunc(BaseFunc):
         assert all([isinstance(arg, str) for arg in args[1:]])
         string: str = args[0] if isinstance(args[0], str) else str(args[0])
         return string.replace(args[1], args[2])
+
+
+class SqrtFunc(BaseFunc):
+    def __init__(self) -> None:
+        super().__init__()
+        self.is_global = False
+
+    @check_nullable
+    def __call__(self, *args: Tuple[str]) -> Any:
+        assert len(args) == 1, f"Некоректная формула: {args=}"
+        return sqrt(args[0])
