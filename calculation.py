@@ -38,7 +38,7 @@ class Group(Subject):  # Group == Definition
     def calc(self):
         while self.dq:
             current_field = self.dq.popleft()
-            if current_field.formula:
+            if current_field.formula and not current_field._value_only:
                 current_field.update(self)
                 if current_field.dependence:
                     self.attach(
