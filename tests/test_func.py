@@ -11,7 +11,7 @@ def avg_func():
 
 class TestAvg:
     def test_empty_args(self, avg_func):
-        assert (result := avg_func([])) == 0, result
+        assert (result := avg_func([])) == "", result
 
     def test_four_elements(self, avg_func):
         assert (result := avg_func([1, 2, 3, 4])) == 2.5, result
@@ -72,7 +72,7 @@ def only_func():
 
 class TestOnly:
     def test_empty_args(self, only_func):
-        assert (result := only_func([], "No")) == 0, result
+        assert (result := only_func([], "No")) == "", result
 
     def test_two_args_success(self, only_func):
         assert (result := only_func([1, 1, 1], "No")) == 1, result

@@ -10,9 +10,9 @@ class BaseFunc:
 
 class AvgFunc(BaseFunc):
     def __call__(self, args: List[Any]) -> Any:
-        if len(args):
-            return mean(args)
-        return 0
+        if not len(args):
+            return ""
+        return mean(args)
 
 
 class IfFunc(BaseFunc):
@@ -30,7 +30,7 @@ class OnlyFunc(BaseFunc):
     def __call__(self, *args: Tuple[Any]) -> Any:
         assert len(args) == 2 or len(args) == 3, f"Некоректная формула: {args=}"
         if not args[0]:
-            return 0
+            return ""
         condition = len(set(args[0])) == 1
         success_result = args[0][0] if len(args) == 2 else args[1]
         failed_result = args[1] if len(args) == 2 else args[2]
