@@ -182,3 +182,11 @@ class TestIncorrectFormula:
         with suppress(ObserversNotEmpty):
             result = FormulaCalculation(data).calc()
         assert result == None, f"Неверное решение: {result}"
+
+    def test_null_in_if(self):
+        data = [NumericField(symbol="@m", value="1", definition_number="1", formula="", primary_key="1"),
+                BoolField(symbol="@check_ignore", value="True", definition_number="1", formula="", primary_key="2"),
+
+                NumericField(symbol="@av", formula="if(avg(@m) < 2, 1,2)", value="", primary_key="3")]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': '1', '2': '1', '3': 'null'}, f"Неверное решение: {result}"
