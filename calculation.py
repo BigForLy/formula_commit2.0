@@ -21,7 +21,7 @@ class Calculation:
             if not group.is_observers_empty:
                 # Если обсерверы были в последней группе, возвращаем ошибку
                 if not self.group_list:
-                    raise ObserversNotEmpty("Расчет подошел к концу, но наблюдатели не пусты")
+                    raise ObserversNotEmpty(group.pop_observers())
                 self.last_group.dq.extend(group.pop_observers())
 
     @property

@@ -2,6 +2,8 @@ from fields import BoolField, NumericField
 from manage import FormulaCalculation
 from memory_profiler import profile
 import time
+from errors import ObserversNotEmpty
+from contextlib import suppress
 
 
 class TestCheckResult:
@@ -159,4 +161,24 @@ class TestAllFieldsCheckIgnore:
                 NumericField(symbol="@av", formula="avg(@m)", value="", primary_key="7")]
         result = FormulaCalculation(data).calc()
         assert result == {'1': '1', '2': '1', '3': '0', 
-                          '4': '1', '5': '1', '6': '0', '7': '0'}, f"Неверное решение: {result}"  # '7' == ''
+                          '4': '1', '5': '1', '6': '0', '7': ''}, f"Неверное решение: {result}"
+
+
+class TestIncorrectFormula:
+    def test_empty_list(self):
+        data = [NumericField(symbol="@m", value="1", definition_number="1", formula="", primary_key="1"),
+                BoolField(symbol="@check_ignore", value="True", definition_number="1", formula="", primary_key="2"),
+
+                NumericField(symbol="@av", formula="@m", value="", primary_key="3"),
+                NumericField(symbol="@av2", formula="@av+1", value="", primary_key="4")]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': '1', '2': '1', '3': '0', '4': '1'}, f"Неверное решение: {result}"  # '3' == ''
+
+    def test_not_field_in_formula(self):
+        data = [NumericField(symbol="@m", value="1", definition_number="1", formula="", primary_key="1"),
+
+                NumericField(symbol="@av", formula="@m+@d", value="", primary_key="2")]
+        result = None
+        with suppress(ObserversNotEmpty):
+            result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"
