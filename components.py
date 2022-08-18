@@ -6,13 +6,13 @@ if TYPE_CHECKING:
     from fields import BaseField
 
 
-class Component(ABC):
+class IComponent(ABC):
     @abstractmethod
     def accept(self, visitor: "BaseField") -> None:
         pass
 
 
-class ConcreteComponentRoundTo(Component):
+class ConcreteComponentRoundTo(IComponent):
     """
     округление
     """
@@ -26,7 +26,7 @@ class ConcreteComponentRoundTo(Component):
                 twoplaces = Decimal(10) ** visitor.round_to
                 visitor.value = visitor.value.quantize(twoplaces)
             case _, False:
-                int_len = len(str(int(visitor.value)))
+                int_len = len(str(int(visitor.value)))  # TODO
                 if int_len > visitor.round_to:
                     with localcontext() as ctx:
                         ctx.prec = int_len - visitor.round_to

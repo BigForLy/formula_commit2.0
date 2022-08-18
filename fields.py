@@ -3,7 +3,7 @@ from typing import Any, List, Set, TYPE_CHECKING, Type
 from decimal import Decimal
 import uuid
 from parser import ParserManager
-from components import Component, ConcreteComponentRoundTo
+from components import IComponent, ConcreteComponentRoundTo
 from consts import FIRST_SYMBOL_BY_ELEMENT
 from functions import FUNC_CALLABLE
 
@@ -30,7 +30,7 @@ class BaseField(ABC):
         formula_check: str = "",  # TODO
         round_with_zeros=None,  # TODO
     ) -> None:
-        self._calc_component: List[Type[Component]] = []
+        self._calc_component: List[Type[IComponent]] = []
 
         self.value: str | Decimal = self.convert_value(value)
 
