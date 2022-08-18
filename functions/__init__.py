@@ -1,4 +1,4 @@
-from .functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc
+from .functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc, ReplaceFunc
 from typing import Dict
 from .functions import BaseFunc
 
@@ -8,4 +8,5 @@ FUNC_CALLABLE: Dict[str, BaseFunc] = {
     "only": OnlyFunc(),
     "count": CountFunc(),
     "sum": SumFunc(),
+    "replace": ReplaceFunc(),
 }

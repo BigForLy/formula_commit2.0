@@ -1,5 +1,6 @@
 from __future__ import with_statement
 from typing import Any, List, Tuple
+from decimal_ import MDecimal
 from statistics import mean
 from consts import null
 
@@ -56,3 +57,13 @@ class SumFunc(BaseFunc):
     @check_nullable
     def __call__(self, arg: Any) -> Any:
         return sum(arg)
+
+
+class ReplaceFunc(BaseFunc):
+    @check_nullable
+    def __call__(self, *args: Tuple[str]) -> Any:
+        assert len(args) == 3, f"Некоректная формула: {args=}"
+        assert isinstance(args[0], (str, MDecimal))
+        assert all([isinstance(arg, str) for arg in args[1:]])
+        string: str = args[0] if isinstance(args[0], str) else str(args[0])
+        return string.replace(args[1], args[2])
