@@ -1,6 +1,7 @@
 from collections import deque
 from typing import Deque
 from chain_map import DefaultListChainMap
+from errors import ObserversNotEmpty
 from fields import BaseField
 from observer import Subject
 
@@ -20,7 +21,7 @@ class Calculation:
             if not group.is_observers_empty:
                 # Если обсерверы были в последней группе, возвращаем ошибку
                 if not self.group_list:
-                    raise ValueError("Расчет подошел к концу, но наблюдатели не пусты")
+                    raise ObserversNotEmpty("Расчет подошел к концу, но наблюдатели не пусты")
                 self.last_group.dq.extend(group.pop_observers())
 
     @property
