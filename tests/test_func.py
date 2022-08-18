@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal_ import MDecimal
 import pytest
 from contextlib import suppress
 from consts import null
@@ -21,9 +21,9 @@ class TestAvg:
         assert (result := avg_func([4, 4, 2])) == 3.3333333333333335, result
 
     def test_three_elements(self, avg_func):
-        assert (result := avg_func([Decimal(4), Decimal(4), Decimal(2)])) == Decimal(
-            "3.333333333333333333333333333"
-        ), result
+        assert (
+            result := avg_func([MDecimal(4), MDecimal(4), MDecimal(2)])
+        ) == MDecimal("3.333333333333333333333333333"), result
 
 
 @pytest.fixture
@@ -65,10 +65,10 @@ class TestSum:
         assert (result := sum_func([])) == null, result
 
     def test_one_arg(self, sum_func):
-        assert (result := sum_func([Decimal(1)])) == Decimal(1), result
+        assert (result := sum_func([MDecimal(1)])) == MDecimal(1), result
 
     def test_many_args(self, sum_func):
-        assert (result := sum_func([Decimal(1), Decimal(1)])) == Decimal(2), result
+        assert (result := sum_func([MDecimal(1), MDecimal(1)])) == MDecimal(2), result
 
 
 @pytest.fixture

@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from decimal import Decimal, localcontext
+from decimal import localcontext
+from decimal_ import MDecimal
 from typing import TYPE_CHECKING
 from consts import null
 
@@ -21,12 +22,12 @@ class ConcreteComponentRoundTo(IComponent):
     def accept(self, visitor: "BaseField") -> None:
         if visitor.value is null:  # TODO
             return null
-        assert isinstance(visitor.value, Decimal)
+        assert isinstance(visitor.value, MDecimal)
         is_need_rounding = visitor.value.as_tuple().exponent < visitor.round_to
         round_to_below_zero = visitor.round_to < 0
         match is_need_rounding, round_to_below_zero:
             case True, True:
-                twoplaces = Decimal(10) ** visitor.round_to
+                twoplaces = MDecimal(10) ** visitor.round_to
                 visitor.value = visitor.value.quantize(twoplaces)
             case _, False:
                 int_len = len(str(int(visitor.value)))  # TODO

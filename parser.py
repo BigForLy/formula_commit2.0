@@ -1,7 +1,7 @@
 from collections import deque
 from consts import null
 from types_ import Null
-from decimal import Decimal
+from decimal_ import MDecimal
 from typing import Any, Deque, Generator, Set
 from functions import FUNC_CALLABLE
 
@@ -48,7 +48,7 @@ class ParserManager:
                     yield repr(null)
                     return
                 elif all or not len(dq):
-                    yield repr(value) if isinstance(value, (Decimal, list, Null)) else value
+                    yield repr(value) if isinstance(value, (MDecimal, list, Null)) else value
                     return
             yield param
 

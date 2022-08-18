@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Set, TYPE_CHECKING, Type
-from decimal import Decimal
+from decimal_ import MDecimal
 from consts import null
 import uuid
 from parser import ParserManager
@@ -33,7 +33,7 @@ class BaseField(ABC):
     ) -> None:
         self._calc_component: List[Type[IComponent]] = []
 
-        self.value: str | Decimal | int = self.convert_value(value)
+        self.value: str | MDecimal | int = self.convert_value(value)
 
         self._update_round_to(round_to)
 
@@ -44,7 +44,7 @@ class BaseField(ABC):
         self.dependence: Set[str] = set()
         self.primary_key = primary_key
 
-    def convert_value(self, value) -> str | Decimal | int:
+    def convert_value(self, value) -> str | MDecimal | int:
         return value
 
     @abstractmethod
@@ -77,7 +77,7 @@ class BaseField(ABC):
     def formula_calculation(self):
         try:
             self.value = eval(
-                self.formula, {"Decimal": Decimal, "null": null, **FUNC_CALLABLE}
+                self.formula, {"MDecimal": MDecimal, "null": null, **FUNC_CALLABLE}
             )
         except NameError as exc:
             # Обрабатываем исключение для StringField
@@ -111,9 +111,9 @@ class NumericField(BaseField):
     Числовое поле
     """
 
-    def convert_value(self, value) -> str | Decimal | int:
+    def convert_value(self, value) -> str | MDecimal | int:
         return (
-            Decimal(str(value))
+            MDecimal(str(value))
             if value
             else value  # может поменять на float('inf') / float('nan')
         )
@@ -139,5 +139,5 @@ class BoolField(BaseField):
     def calc(self):
         pass
 
-    def convert_value(self, value) -> str | Decimal | int:
+    def convert_value(self, value) -> str | MDecimal | int:
         return 1 if value in (True, 1, "True") else 0

@@ -1,5 +1,5 @@
 import pytest
-from decimal import Decimal
+from decimal_ import MDecimal
 from fields import BoolField, NumericField
 
 
@@ -43,10 +43,10 @@ def test_correct_bool_field(get_bool_field: BoolField):
 
 
 def test_correct_numeric_value(get_numeric_field: NumericField):
-    assert get_numeric_field.value == Decimal("1.201"), get_numeric_field.value
+    assert get_numeric_field.value == MDecimal("1.201"), get_numeric_field.value
 
 
 def test_large_length_value(get_numeric_field_large_length_value: NumericField):
-    assert get_numeric_field_large_length_value.value == Decimal(
+    assert get_numeric_field_large_length_value.value == MDecimal(
         "3.12121212"
     ), get_numeric_field_large_length_value.value
