@@ -32,7 +32,7 @@ class BaseField(ABC):
     ) -> None:
         self._calc_component: List[Type[IComponent]] = []
 
-        self.value: str | Decimal = self.convert_value(value)
+        self.value: str | Decimal | int = self.convert_value(value)
 
         self._update_round_to(round_to)
 
@@ -43,7 +43,7 @@ class BaseField(ABC):
         self.dependence: Set[str] = set()
         self.primary_key = primary_key
 
-    def convert_value(self, value) -> str | Decimal:
+    def convert_value(self, value) -> str | Decimal | int:
         return value
 
     @abstractmethod
@@ -109,7 +109,7 @@ class NumericField(BaseField):
     Числовое поле
     """
 
-    def convert_value(self, value) -> str | Decimal:
+    def convert_value(self, value) -> str | Decimal | int:
         return (
             Decimal(str(value))
             if value
@@ -137,5 +137,5 @@ class BoolField(BaseField):
     def calc(self):
         pass
 
-    def convert_value(self, value) -> str | Decimal:
+    def convert_value(self, value) -> str | Decimal | int:
         return 1 if value in (True, 1, "True") else 0
