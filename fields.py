@@ -28,6 +28,7 @@ class BaseField(ABC):
         primary_key: Any,
         round_to: int = 0,
         formula_check: str = "",  # TODO
+        round_with_zeros=None,  # TODO
     ) -> None:
         self._calc_component: List[Type[Component]] = []
 
@@ -85,6 +86,7 @@ class BaseField(ABC):
 
     def convert_to_python_formula(self):
         self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
+        self.formula = "".join(parser.replace(self.formula, "null", "None", True))
         self.formula = (
             self.formula.replace("=", "==")
             .replace("<==", "<=")
@@ -134,3 +136,6 @@ class BoolField(BaseField):
 
     def calc(self):
         pass
+
+    def convert_value(self, value) -> str | Decimal:
+        return 1 if value in (True, 1, "True") else 0
