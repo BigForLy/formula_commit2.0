@@ -1,6 +1,16 @@
 from __future__ import with_statement
 from typing import Any, List, Tuple
 from statistics import mean
+from consts import null
+
+
+def check_nullable(func):
+    def _inner(self_, arg=None, *args):
+        if not arg:
+            return null
+        return func(self_, arg, *args)
+
+    return _inner
 
 
 class BaseFunc:
@@ -9,10 +19,9 @@ class BaseFunc:
 
 
 class AvgFunc(BaseFunc):
-    def __call__(self, args: List[Any]) -> Any:
-        if not len(args):
-            return ""
-        return mean(args)
+    @check_nullable
+    def __call__(self, arg: List[Any]) -> Any:
+        return mean(arg)
 
 
 class IfFunc(BaseFunc):
@@ -30,7 +39,7 @@ class OnlyFunc(BaseFunc):
     def __call__(self, *args: Tuple[Any]) -> Any:
         assert len(args) == 2 or len(args) == 3, f"Некоректная формула: {args=}"
         if not args[0]:
-            return ""
+            return null
         condition = len(set(args[0])) == 1
         success_result = args[0][0] if len(args) == 2 else args[1]
         failed_result = args[1] if len(args) == 2 else args[2]
@@ -38,5 +47,12 @@ class OnlyFunc(BaseFunc):
 
 
 class CountFunc(BaseFunc):
+    @check_nullable
     def __call__(self, arg: Any) -> Any:
         return len(arg)
+
+
+class SumFunc(BaseFunc):
+    @check_nullable
+    def __call__(self, arg: Any) -> Any:
+        return sum(arg)

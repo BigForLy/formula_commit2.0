@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Set, TYPE_CHECKING, Type
 from decimal import Decimal
+from consts import null
 import uuid
 from parser import ParserManager
 from components import IComponent, ConcreteComponentRoundTo
@@ -75,7 +76,9 @@ class BaseField(ABC):
 
     def formula_calculation(self):
         try:
-            self.value = eval(self.formula, {"Decimal": Decimal, **FUNC_CALLABLE})
+            self.value = eval(
+                self.formula, {"Decimal": Decimal, "null": null, **FUNC_CALLABLE}
+            )
         except NameError as exc:
             # Обрабатываем исключение для StringField
             self.value = self.formula
@@ -86,7 +89,6 @@ class BaseField(ABC):
 
     def convert_to_python_formula(self):
         self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
-        self.formula = "".join(parser.replace(self.formula, "null", "None", True))
         self.formula = (
             self.formula.replace("=", "==")
             .replace("<==", "<=")

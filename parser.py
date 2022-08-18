@@ -1,4 +1,6 @@
 from collections import deque
+from consts import null
+from types_ import Null
 from decimal import Decimal
 from typing import Any, Deque, Generator, Set
 from functions import FUNC_CALLABLE
@@ -42,8 +44,11 @@ class ParserManager:
     ) -> Generator[str, None, None]:
         def _inner(param: str):
             if param == replacement_text:
-                if all or not len(dq):
-                    yield repr(value) if isinstance(value, (Decimal, list)) else value
+                if all and not len(dq) and isinstance(value, list) and not len(value):
+                    yield repr(null)
+                    return
+                elif all or not len(dq):
+                    yield repr(value) if isinstance(value, (Decimal, list, Null)) else value
                     return
             yield param
 

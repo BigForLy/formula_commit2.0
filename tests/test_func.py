@@ -1,7 +1,8 @@
 from decimal import Decimal
 import pytest
 from contextlib import suppress
-from functions import AvgFunc, IfFunc, OnlyFunc, CountFunc
+from consts import null
+from functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc
 
 
 @pytest.fixture
@@ -11,7 +12,7 @@ def avg_func():
 
 class TestAvg:
     def test_empty_args(self, avg_func):
-        assert (result := avg_func([])) == "", result
+        assert (result := avg_func([])) == null, result
 
     def test_four_elements(self, avg_func):
         assert (result := avg_func([1, 2, 3, 4])) == 2.5, result
@@ -33,7 +34,7 @@ def if_func():
 class TestIf:
     def test_empty_args(self, if_func):
         with suppress(AssertionError):
-            assert (result := if_func([])) == None, result
+            assert (result := if_func([])) == null, result
 
     def test_less_func(self, if_func):
         assert (result := if_func(2 < 2, 2, 1)) == 1, result
@@ -54,15 +55,20 @@ class TestIf:
         assert (result := if_func(2 != 2, 2, 1)) == 1, result
 
 
+@pytest.fixture
+def sum_func():
+    return SumFunc()
+
+
 class TestSum:
-    def test_empty_args(self):
-        assert (result := sum([])) == 0, result
+    def test_empty_args(self, sum_func):
+        assert (result := sum_func([])) == null, result
 
-    def test_one_arg(self):
-        assert (result := sum([Decimal(1)])) == Decimal(1), result
+    def test_one_arg(self, sum_func):
+        assert (result := sum_func([Decimal(1)])) == Decimal(1), result
 
-    def test_many_args(self):
-        assert (result := sum([Decimal(1), Decimal(1)])) == Decimal(2), result
+    def test_many_args(self, sum_func):
+        assert (result := sum_func([Decimal(1), Decimal(1)])) == Decimal(2), result
 
 
 @pytest.fixture
@@ -72,7 +78,7 @@ def only_func():
 
 class TestOnly:
     def test_empty_args(self, only_func):
-        assert (result := only_func([], "No")) == "", result
+        assert (result := only_func([], "No")) == null, result
 
     def test_two_args_success(self, only_func):
         assert (result := only_func([1, 1, 1], "No")) == 1, result
@@ -94,7 +100,7 @@ def count_func():
 
 class TestCount:
     def test_empty_args(self, count_func):
-        assert (result := count_func([])) == 0, result
+        assert (result := count_func([])) == null, result
 
     def test_three_args(self, count_func):
         assert (result := count_func([1, 1, 2])) == 3, result
