@@ -43,7 +43,7 @@ class ParserManager:
         self, source_text: str, replacement_text: str, value: Any, all: bool
     ) -> Generator[str, None, None]:
         def _inner(param: str):
-            if param == replacement_text:
+            if param.lower() == replacement_text.lower():
                 if all and not len(dq) and isinstance(value, list) and not len(value):
                     yield repr(null)
                     return

@@ -84,11 +84,13 @@ class BaseField(ABC):
             self.value = self.formula
         except (SystemExit, Exception) as exc:
             raise ValueError(
-                f"Ошибка в формуле: {self.symbol=}, {self.definition_number}, {self.formula=}"
+                f"Ошибка в формуле: symbol={self.symbol}, definition_number={self.definition_number}, formula={self.formula}"
             ) from exc
 
     def convert_to_python_formula(self):
         self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
+        self.formula = "".join(parser.replace(self.formula, "avg", "avg", True))  # TODO
+        self.formula = "".join(parser.replace(self.formula, "replace", "replace", True))
         self.formula = (
             self.formula.replace("=", "==")
             .replace("<==", "<=")
