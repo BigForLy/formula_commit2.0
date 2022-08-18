@@ -21,7 +21,11 @@ class Calculation:
                 # Если обсерверы были в последней группе, возвращаем ошибку
                 if not self.group_list:
                     raise ValueError("Расчет подошел к концу, но наблюдатели не пусты")
-                self.group_list[-1].dq.extend(group.pop_observers())
+                self.last_group.dq.extend(group.pop_observers())
+
+    @property
+    def last_group(self):
+        return self.group_list[-1]
 
 
 class Group(Subject):  # Group == Definition
