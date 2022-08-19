@@ -1,4 +1,5 @@
 from __future__ import with_statement
+from collections.abc import Iterable
 from typing import Any, List, SupportsFloat, SupportsIndex, Tuple
 from decimal_ import MDecimal
 from consts import null
@@ -6,10 +7,29 @@ from math import sqrt
 
 
 def check_nullable(func):
-    def _inner(self_, arg=None, *args):
+    """
+    Проверка на наличие хотя бы одного аргумента
+    """
+
+    def _inner(self, arg=None, *args):
         if not arg:
             return null
-        return func(self_, arg, *args)
+        return func(self, arg, *args)
+
+    return _inner
+
+
+def return_first_if_once(func):
+    """
+    Возвращает первый аргумент, если он единственный
+    """
+
+    def _inner(self, arg=None, *args):
+        if isinstance(arg, Iterable) and len(arg) == 1 and not args:
+            return arg[0]
+        if not isinstance(arg, Iterable) and not args:
+            return arg
+        return func(self, arg, *args)
 
     return _inner
 
@@ -21,6 +41,7 @@ class BaseFunc:
 
 class AvgFunc(BaseFunc):
     @check_nullable
+    @return_first_if_once
     def __call__(self, arg: List[Any]) -> Any:
         return sum(arg) / len(arg)
 
@@ -55,6 +76,7 @@ class CountFunc(BaseFunc):
 
 class SumFunc(BaseFunc):
     @check_nullable
+    @return_first_if_once
     def __call__(self, arg: Any) -> Any:
         return sum(arg)
 
@@ -89,6 +111,7 @@ class MaxFunc(BaseFunc):
         self.is_global = False
 
     @check_nullable
+    @return_first_if_once
     def __call__(self, *args: Tuple[str]) -> Any:
         assert len(args) == 1, f"Некоректная формула: {args=}"
         return max(args[0])
@@ -100,6 +123,7 @@ class MinFunc(BaseFunc):
         self.is_global = False
 
     @check_nullable
+    @return_first_if_once
     def __call__(self, *args: Tuple[str]) -> Any:
         assert len(args) == 1, f"Некоректная формула: {args=}"
         return min(args[0])
