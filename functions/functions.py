@@ -1,7 +1,6 @@
 from __future__ import with_statement
 from typing import Any, List, Tuple
 from decimal_ import MDecimal
-from statistics import mean
 from consts import null
 from math import sqrt
 
@@ -23,7 +22,7 @@ class BaseFunc:
 class AvgFunc(BaseFunc):
     @check_nullable
     def __call__(self, arg: List[Any]) -> Any:
-        return mean(arg)
+        return sum(arg)/len(arg)
 
 
 class IfFunc(BaseFunc):
@@ -83,3 +82,25 @@ class SqrtFunc(BaseFunc):
     def __call__(self, *args: Tuple[str]) -> Any:
         assert len(args) == 1, f"Некоректная формула: {args=}"
         return sqrt(args[0])
+
+
+class MaxFunc(BaseFunc):
+    def __init__(self) -> None:
+        super().__init__()
+        self.is_global = False
+
+    @check_nullable
+    def __call__(self, *args: Tuple[str]) -> Any:
+        assert len(args) == 1, f"Некоректная формула: {args=}"
+        return max(args[0])
+
+
+class MinFunc(BaseFunc):
+    def __init__(self) -> None:
+        super().__init__()
+        self.is_global = False
+
+    @check_nullable
+    def __call__(self, *args: Tuple[str]) -> Any:
+        assert len(args) == 1, f"Некоректная формула: {args=}"
+        return min(args[0])

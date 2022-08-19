@@ -6,6 +6,8 @@ from .functions import (
     SumFunc,
     ReplaceFunc,
     SqrtFunc,
+    MaxFunc,
+    MinFunc,
 )
 from typing import Dict
 from .functions import BaseFunc
@@ -18,4 +20,6 @@ FUNC_CALLABLE: Dict[str, BaseFunc] = {
     "sum": SumFunc(),
     "replace": ReplaceFunc(),
     "sqrt": SqrtFunc(),
+    "max": MaxFunc(),
+    "min": MinFunc(),
 }
