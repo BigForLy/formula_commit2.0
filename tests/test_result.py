@@ -217,6 +217,16 @@ class TestIncorrectFormula:
             result = FormulaCalculation(data).calc()
         assert result == None, f"Неверное решение: {result}"
 
+    def test_local_global_fomula(self):
+        result = None
+        data = [NumericField(symbol="@m", value="1", formula="", primary_key="1"),
+
+                NumericField(symbol="@av", formula="avg(@m)", value="", primary_key="2"),
+
+                NumericField(symbol="@ab", formula="avg(@av)", value="", primary_key="3")]
+        result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"
+
 
 class TestOnlyResult:
     def test_1param_equals(self):
@@ -254,3 +264,17 @@ class TestOnlyResult:
                 ]
         result = FormulaCalculation(data).calc()
         assert result == {'1': 'Привет', '2': 'Привет1', '3': 'Разногласие по параметрам'}, f"Неверное решение: {result}"
+
+
+class TestEval:
+    def test_os(self):
+        data = [NumericField(symbol="@b", formula="", value="4", definition_number="1", primary_key="1"),
+                NumericField(symbol="@t", formula="@b + os.cpu_count()", value="4", definition_number="1", primary_key="2")]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': '4', '2': '4'}, f"Неверное решение: {result}"
+
+    def test_import(self):
+        data = [NumericField(symbol="@b", formula="", value="4", definition_number="1", primary_key="1"),
+                NumericField(symbol="@t", formula="@b + __import__('os').cpu_count()", value="Привет", definition_number="1", primary_key="2")]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': 'Привет', '2': 'Привет', '3': 'Привет'}, f"Неверное решение: {result}"
