@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
 from decimal_ import MDecimal
 from consts import null
@@ -30,15 +31,17 @@ class BaseField(ABC):
         round_to: int = 0,
         formula_check: str = "",  # TODO
         round_with_zeros=None,  # TODO
+        required_field: bool = True,  # TODO
     ) -> None:
         self._calc_component: List[Type[IComponent]] = []
+        self.required_field = required_field
+        self.formula = formula
 
         self.value: str | MDecimal | int = self.convert_value(value)
 
         self._update_round_to(round_to)
 
         self.symbol = symbol
-        self.formula = formula
         self._value_only = False  # значение является константой
         self.definition_number = definition_number
         self.dependence: Set[str] = set()
@@ -46,6 +49,10 @@ class BaseField(ABC):
 
     def convert_value(self, value) -> str | MDecimal | int:
         return value
+
+    def check_required_field(self):
+        if self.required_field and not self.value and not self.formula:
+            raise ValueError(f"Не заполнено обязательное поле: (symbol: {self.symbol})")
 
     @abstractmethod
     def calc(self):
@@ -76,9 +83,12 @@ class BaseField(ABC):
 
     def formula_calculation(self):
         try:
-            self.value = eval(
+            value = eval(
                 self.formula, {"MDecimal": MDecimal, "null": null, **FUNC_CALLABLE}
             )
+            if isinstance(value, (int, float)):  # TODO
+                value = MDecimal(str(value))
+            self.value = value
         except NameError as exc:
             # Обрабатываем исключение для StringField
             self.value = self.formula
@@ -91,6 +101,8 @@ class BaseField(ABC):
         self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
         self.formula = "".join(parser.replace(self.formula, "avg", "avg", True))  # TODO
         self.formula = "".join(parser.replace(self.formula, "replace", "replace", True))
+        self.formula = "".join(parser.replace(self.formula, "sqrt", "sqrt", True))
+        self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))
         self.formula = (
             self.formula.replace("=", "==")
             .replace("<==", "<=")
@@ -121,7 +133,8 @@ class NumericField(BaseField):
         )
 
     def calc(self):
-        self._update_value_with_component()
+        if self.value:
+            self._update_value_with_component()
 
 
 class StringField(BaseField):
@@ -129,8 +142,15 @@ class StringField(BaseField):
     Строковое поле
     """
 
+    def convert_value(self, value) -> str | MDecimal | int:
+        try:
+            value = MDecimal(value)
+        finally:
+            return value
+
     def calc(self):
-        pass
+        if self.value or isinstance(self.value, MDecimal):
+            self._update_value_with_component()
 
 
 class BoolField(BaseField):
