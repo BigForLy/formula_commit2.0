@@ -14,10 +14,10 @@ class DefinitionManager:
 
     def add_field(self, current_field: BaseField):
         definition = self._definitions[current_field.definition_number]
-        self._cm_parent[current_field.symbol] = []
-
         definition.add_field(current_field)
         self._fields.append(current_field)
+
+        self._cm_parent[current_field.symbol] = []
 
     def separation_fields_by_definitions(self, data: list):
         for current_field in data:
