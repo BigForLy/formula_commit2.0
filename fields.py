@@ -51,7 +51,7 @@ class BaseField(ABC):
         return value
 
     def check_required_field(self):
-        if self.required_field and not self.value and not self.formula:
+        if self.required_field and self.value in ('', None) and not self.formula:
             raise ValueError(f"Не заполнено обязательное поле: (symbol: {self.symbol})")
 
     @abstractmethod
