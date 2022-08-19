@@ -22,7 +22,7 @@ class BaseFunc:
 class AvgFunc(BaseFunc):
     @check_nullable
     def __call__(self, arg: List[Any]) -> Any:
-        return sum(arg)/len(arg)
+        return sum(arg) / len(arg)
 
 
 class IfFunc(BaseFunc):

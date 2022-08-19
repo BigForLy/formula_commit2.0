@@ -47,10 +47,17 @@ class MDecimal(Decimal):
     def __round__(self, n):
         return MDecimal(super().__round__(n))
 
-    def __pow__(self, __other: Decimal | int, __modulo: Decimal | int | None = None) -> MDecimal:
+    def __pow__(
+        self, __other: Decimal | int, __modulo: Decimal | int | None = None
+    ) -> MDecimal:
         return MDecimal(super().__pow__(__other, __modulo))
 
-    def quantize(self, exp: Decimal | int, rounding: str | None = None, context: Context | None = None) -> MDecimal:
+    def quantize(
+        self,
+        exp: Decimal | int,
+        rounding: str | None = None,
+        context: Context | None = None,
+    ) -> MDecimal:
         return MDecimal(super().quantize(exp, rounding, context))
 
     def __repr__(self) -> str:

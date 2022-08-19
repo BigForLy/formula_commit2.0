@@ -48,7 +48,9 @@ class ParserManager:
                     yield repr(null)
                     return
                 elif all or not len(dq):
-                    yield repr(value) if isinstance(value, (MDecimal, list, Null)) else value
+                    yield repr(value) if isinstance(
+                        value, (MDecimal, list, Null)
+                    ) else value
                     return
             yield param
 

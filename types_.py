@@ -43,19 +43,19 @@ class Null:
 
     def __lt__(self, other):
         "<"
-        return float('nan') < other
+        return float("nan") < other
 
     def __gt__(self, other):
         ">"
-        return float('nan') > other
+        return float("nan") > other
 
     def __le__(self, other):
         "<="
-        return float('nan') <= other
+        return float("nan") <= other
 
     def __ge__(self, other):
         ">="
-        return float('nan') >= other
+        return float("nan") >= other
 
     def __repr__(self) -> str:
         return f"null"
