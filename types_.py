@@ -30,5 +30,32 @@ class Null:
     def __iter__(self):
         return []
 
+    def __bool__(self):
+        return False
+
+    def __eq__(self, other):
+        "=="
+        return False
+
+    def __ne__(self, other):
+        "!="
+        return False
+
+    def __lt__(self, other):
+        "<"
+        return float('nan') < other
+
+    def __gt__(self, other):
+        ">"
+        return float('nan') > other
+
+    def __le__(self, other):
+        "<="
+        return float('nan') <= other
+
+    def __ge__(self, other):
+        ">="
+        return float('nan') >= other
+
     def __repr__(self) -> str:
         return f"null"
