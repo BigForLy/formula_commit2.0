@@ -1,4 +1,4 @@
-from fields import BoolField, NumericField
+from fields import BoolField, NumericField, StringField
 from manage import FormulaCalculation
 from memory_profiler import profile
 import time
@@ -216,3 +216,41 @@ class TestIncorrectFormula:
         with suppress(ValueError):
             result = FormulaCalculation(data).calc()
         assert result == None, f"Неверное решение: {result}"
+
+
+class TestOnlyResult:
+    def test_1param_equals(self):
+        data = [StringField(symbol="@t", formula="", value="Привет", definition_number="1", primary_key="1"),
+                StringField(symbol="@t", formula="", value="Привет", definition_number="2", primary_key="2"),
+                StringField(symbol="@exp", formula='only(@t, "Разногласие по параметрам")', value="500",
+                            definition_number="1", primary_key="3")
+                ]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': 'Привет', '2': 'Привет', '3': 'Привет'}, f"Неверное решение: {result}"
+
+    def test_1param_not_equals(self):
+        data = [StringField(symbol="@t", formula="", value="Привет", definition_number="1", primary_key="1"),
+                StringField(symbol="@t", formula="", value="Привет1", definition_number="2", primary_key="2"),
+                StringField(symbol="@exp", formula='only(@t, "Разногласие по параметрам")', value="500",
+                            definition_number="1", primary_key="3")
+                ]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': 'Привет', '2': 'Привет1', '3': 'Разногласие по параметрам'}, f"Неверное решение: {result}"
+
+    def test_2param_equals(self):
+        data = [StringField(symbol="@t", formula="", value="Привет", definition_number="1", primary_key="1"),
+                StringField(symbol="@t", formula="", value="Привет", definition_number="2", primary_key="2"),
+                StringField(symbol="@exp", formula='only(@t, "ПП", "Разногласие по параметрам")', value="500",
+                            definition_number="1", primary_key="3")
+                ]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': 'Привет', '2': 'Привет', '3': 'ПП'}, f"Неверное решение: {result}"
+
+    def test_2param_not_equals(self):
+        data = [StringField(symbol="@t", formula="", value="Привет", definition_number="1", primary_key="1"),
+                StringField(symbol="@t", formula="", value="Привет1", definition_number="2", primary_key="2"),
+                StringField(symbol="@exp", formula='only(@t, "ПП", "Разногласие по параметрам")', value="500",
+                            definition_number="1", primary_key="3")
+                ]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': 'Привет', '2': 'Привет1', '3': 'Разногласие по параметрам'}, f"Неверное решение: {result}"
