@@ -225,7 +225,16 @@ class TestIncorrectFormula:
 
                 NumericField(symbol="@ab", formula="avg(@av)", value="", primary_key="3")]
         result = FormulaCalculation(data).calc()
-        assert result == None, f"Неверное решение: {result}"
+        assert result == {'1': '1', '2': '1', '3': '1'}, f"Неверное решение: {result}"
+
+    def test_str_in_formula_in_formula(self):
+        data = [
+            StringField(symbol="@x", value="Отсвутствуют", formula="", primary_key="1"),
+            StringField(symbol="@exp", value="", formula="@x", primary_key="2"),
+            StringField(symbol="@r", value="", formula="if(@exp <> '', @exp, 'Н')", primary_key="3")
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {'1': "Отсвутствуют", '2': 'Отсвутствуют', '3': 'Отсвутствуют'}, f"Неверное решение: {result}"
 
 
 class TestOnlyResult:
@@ -270,11 +279,23 @@ class TestEval:
     def test_os(self):
         data = [NumericField(symbol="@b", formula="", value="4", definition_number="1", primary_key="1"),
                 NumericField(symbol="@t", formula="@b + os.cpu_count()", value="4", definition_number="1", primary_key="2")]
-        result = FormulaCalculation(data).calc()
-        assert result == {'1': '4', '2': '4'}, f"Неверное решение: {result}"
+        result = None
+        with suppress(ValueError):
+            result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"
+
+    def test_os_string(self):
+        data = [NumericField(symbol="@b", formula="", value="4", definition_number="1", primary_key="1"),
+                StringField(symbol="@t", formula="@b + os.cpu_count()", value="4", definition_number="1", primary_key="2")]
+        result = None
+        with suppress(ValueError):
+            result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"
 
     def test_import(self):
         data = [NumericField(symbol="@b", formula="", value="4", definition_number="1", primary_key="1"),
-                NumericField(symbol="@t", formula="@b + __import__('os').cpu_count()", value="Привет", definition_number="1", primary_key="2")]
-        result = FormulaCalculation(data).calc()
-        assert result == {'1': 'Привет', '2': 'Привет', '3': 'Привет'}, f"Неверное решение: {result}"
+                StringField(symbol="@t", formula="@b + __import__('os').cpu_count()", value="Привет", definition_number="1", primary_key="2")]
+        result = None
+        with suppress(ValueError):
+            result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"

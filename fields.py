@@ -84,7 +84,17 @@ class BaseField(ABC):
     def formula_calculation(self):
         try:
             value = eval(
-                self.formula, {"MDecimal": MDecimal, "null": null, **FUNC_CALLABLE}
+                self.formula,
+                {
+                    "__builtins__": {"round": round},
+                    "MDecimal": MDecimal,
+                    "null": null,
+                    **FUNC_CALLABLE,
+                    # eval really is dangerous
+                    "os": ValueError,
+                    "__import__": ValueError,
+                    "__class__": ValueError,
+                },
             )
             if isinstance(value, (int, float)):  # TODO
                 value = MDecimal(str(value))
