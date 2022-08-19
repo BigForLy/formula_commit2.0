@@ -1,5 +1,5 @@
 from __future__ import with_statement
-from typing import Any, List, Tuple
+from typing import Any, List, SupportsFloat, SupportsIndex, Tuple
 from decimal_ import MDecimal
 from consts import null
 from math import sqrt
@@ -79,9 +79,8 @@ class SqrtFunc(BaseFunc):
         self.is_global = False
 
     @check_nullable
-    def __call__(self, *args: Tuple[str]) -> Any:
-        assert len(args) == 1, f"Некоректная формула: {args=}"
-        return sqrt(args[0])
+    def __call__(self, arg: SupportsFloat | SupportsIndex | MDecimal) -> Any:
+        return sqrt(arg)
 
 
 class MaxFunc(BaseFunc):
