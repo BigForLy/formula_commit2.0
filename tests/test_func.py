@@ -12,7 +12,7 @@ def avg_func():
 
 class TestAvg:
     def test_empty_args(self, avg_func):
-        assert (result := avg_func([])) == null, result
+        assert (result := avg_func([])) is null, result
 
     def test_four_elements(self, avg_func):
         assert (result := avg_func([1, 2, 3, 4])) == 2.5, result
@@ -62,7 +62,7 @@ def sum_func():
 
 class TestSum:
     def test_empty_args(self, sum_func):
-        assert (result := sum_func([])) == null, result
+        assert (result := sum_func([])) is null, result
 
     def test_one_arg(self, sum_func):
         assert (result := sum_func([MDecimal(1)])) == MDecimal(1), result
@@ -78,7 +78,7 @@ def only_func():
 
 class TestOnly:
     def test_empty_args(self, only_func):
-        assert (result := only_func([], "No")) == null, result
+        assert (result := only_func([], "No")) is null, result
 
     def test_two_args_success(self, only_func):
         assert (result := only_func([1, 1, 1], "No")) == 1, result
@@ -100,7 +100,7 @@ def count_func():
 
 class TestCount:
     def test_empty_args(self, count_func):
-        assert (result := count_func([])) == null, result
+        assert (result := count_func([])) is null, result
 
     def test_three_args(self, count_func):
         assert (result := count_func([1, 1, 2])) == 3, result
