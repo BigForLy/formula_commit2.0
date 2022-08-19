@@ -1,8 +1,8 @@
+from typing import Any, Deque, Generator, Set
 from collections import deque
 from consts import null
 from types_ import Null
 from decimal_ import MDecimal
-from typing import Any, Deque, Generator, Set
 from functions import FUNC_CALLABLE
 
 
@@ -40,14 +40,14 @@ class ParserManager:
         return set(token for token in self._parse(text) if search_element in token)
 
     def replace(
-        self, source_text: str, replacement_text: str, value: Any, all: bool
+        self, source_text: str, replacement_text: str, value: Any, all_: bool
     ) -> Generator[str, None, None]:
         def _inner(param: str):
             if param.lower() == replacement_text.lower():
-                if all and not len(dq) and isinstance(value, list) and not len(value):
+                if all_ and not dq and isinstance(value, list) and not value:
                     yield repr(null)
                     return
-                elif all or not len(dq):
+                if all_ or not dq:
                     yield repr(value) if isinstance(
                         value, (MDecimal, list, Null)
                     ) else value
@@ -59,7 +59,7 @@ class ParserManager:
         for s in source_text:
             if s in self.operators:
                 if s == "(" and (
-                    len(dq) > 0
+                    dq
                     or param.lower() in FUNC_CALLABLE
                     and FUNC_CALLABLE[param.lower()].is_global
                 ):

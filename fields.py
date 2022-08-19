@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
-from decimal_ import MDecimal
-from consts import null
 import uuid
 from parser import ParserManager
 from components import IComponent, ConcreteComponentRoundTo
+from decimal_ import MDecimal
+from consts import null
 from consts import FIRST_SYMBOL_BY_ELEMENT
 from functions import FUNC_CALLABLE
 
@@ -36,16 +36,15 @@ class BaseField(ABC):
         self._calc_component: List[Type[IComponent]] = []
         self.required_field = required_field
         self.formula = formula
+        self.symbol = symbol
+        self._value_only = False  # значение является константой
+        self.definition_number = definition_number
+        self.primary_key = primary_key
+        self.dependence: Set[str] = set()
 
         self.value: str | MDecimal | int = self.convert_value(value)
 
         self._update_round_to(round_to)
-
-        self.symbol = symbol
-        self._value_only = False  # значение является константой
-        self.definition_number = definition_number
-        self.dependence: Set[str] = set()
-        self.primary_key = primary_key
 
     def convert_value(self, value) -> str | MDecimal | int:
         return value
@@ -126,11 +125,18 @@ class NumericField(BaseField):
     """
 
     def convert_value(self, value) -> str | MDecimal | int:
-        return (
-            MDecimal(str(value))
-            if value
-            else value  # может поменять на float('inf') / float('nan')
-        )
+        try:
+            return (
+                MDecimal(str(value))
+                if value
+                else value  # может поменять на float('inf') / float('nan')
+            )
+        except InvalidOperation as exc:
+            raise ValueError(
+                f"В числовое поле записана строка: symbol={self.symbol}"
+            ) from exc
+        except Exception as exc:
+            raise Exception from exc
 
     def calc(self):
         if self.value:

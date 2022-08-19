@@ -30,5 +30,5 @@ class Subject:
         self._observers = []
 
     @property
-    def is_observers_empty(self):
-        return False if len(self._observers) else True
+    def is_observers_empty(self) -> bool:
+        return not self._observers
