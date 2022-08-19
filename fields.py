@@ -78,6 +78,7 @@ class BaseField(ABC):
         )
         if not self.dependence:
             self.formula_calculation()
+            # вызывает последовательное обновление столбцов
             subject.calculation_current_field(self)
 
     def formula_calculation(self):
