@@ -210,9 +210,9 @@ class TestIncorrectFormula:
 
     def test_no_required_field(self):
         result = None
-        with suppress(ValueError):
-            data = [NumericField(symbol="@m", value="", definition_number="1", formula="", primary_key="1"),
+        data = [NumericField(symbol="@m", value="", definition_number="1", formula="", primary_key="1"),
 
-                    NumericField(symbol="@av", formula="@m-1", value="", primary_key="2")]
+                NumericField(symbol="@av", formula="@m-1", value="", primary_key="2")]
+        with suppress(ValueError):
             result = FormulaCalculation(data).calc()
         assert result == None, f"Неверное решение: {result}"
