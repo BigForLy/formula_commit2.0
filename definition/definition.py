@@ -28,10 +28,10 @@ class Definition:
             # Если у определения не активен параметр игнорировать, добавляем поле в расчет
             self.add_in_deque(current_field)
 
-        if "check_ignore" in current_field.symbol and current_field.value:
+        if "check_ignore" in current_field.symbol and current_field._value:
             self.__check_ignore = True
             self.local_deque.clear()
-        elif "input_manual" in current_field.symbol and current_field.value:
+        elif "input_manual" in current_field.symbol and current_field._value:
             self.__input_manual = True
             self.local_deque.clear()
 

@@ -42,7 +42,7 @@ class BaseField(ABC):
         self.primary_key = primary_key
         self.dependence: Set[str] = set()
 
-        self.value: str | MDecimal | int = self.convert_value(value)
+        self._value: str | MDecimal | int = self.convert_value(value)
 
         self._update_round_to(round_to)
 
@@ -50,7 +50,7 @@ class BaseField(ABC):
         return value
 
     def check_required_field(self):
-        if self.required_field and self.value in ("", None) and not self.formula:
+        if self.required_field and self._value in ("", None) and not self.formula:
             raise ValueError(f"Не заполнено обязательное поле: (symbol: {self.symbol})")
 
     @abstractmethod
@@ -98,10 +98,7 @@ class BaseField(ABC):
             )
             if isinstance(value, (int, float)):  # TODO
                 value = MDecimal(str(value))
-            self.value = value
-        except NameError as exc:
-            # Обрабатываем исключение для StringField
-            self.value = self.formula
+            self._value = value
         except (SystemExit, Exception) as exc:
             raise ValueError(
                 f"Ошибка в формуле: symbol={self.symbol}, definition_number={self.definition_number}, formula={self.formula}"
@@ -129,6 +126,9 @@ class BaseField(ABC):
         if round_to:
             self._calc_component.append(ConcreteComponentRoundTo)
 
+    def value(self):
+        return self._value
+
 
 class NumericField(BaseField):
     """
@@ -150,7 +150,7 @@ class NumericField(BaseField):
             raise Exception from exc
 
     def calc(self):
-        if self.value:
+        if self._value:
             self._update_value_with_component()
 
 
@@ -162,12 +162,29 @@ class StringField(BaseField):
     def convert_value(self, value) -> str | MDecimal | int:
         try:
             value = MDecimal(value)
+        except:
+            value = repr(value)
         finally:
             return value
 
     def calc(self):
-        if self.value or isinstance(self.value, MDecimal):
+        if self._value or isinstance(self._value, MDecimal):  # TODO and
             self._update_value_with_component()
+        if isinstance(self._value, str) and not self.value_is_repr():
+            self._value = repr(self._value)
+
+    def value(self):
+        if self.value_is_repr():
+            return self._value[1:-1]
+        return self._value
+
+    def value_is_repr(self):
+        return (
+            isinstance(self._value, str)
+            and len(self._value) > 1
+            and self._value[0] in ("'", '"')
+            and self._value[-1] in ("'", '"')
+        )
 
 
 class BoolField(BaseField):

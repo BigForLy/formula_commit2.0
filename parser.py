@@ -60,8 +60,8 @@ class ParserManager:
             if s in self.operators:
                 if s == "(" and (
                     dq
-                    or param.lower() in FUNC_CALLABLE
-                    and FUNC_CALLABLE[param.lower()].is_global
+                    or param in FUNC_CALLABLE
+                    and FUNC_CALLABLE[param].is_global
                 ):
                     dq.append(s)
 

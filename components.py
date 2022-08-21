@@ -21,18 +21,18 @@ class ConcreteComponentRoundTo(IComponent):
     """
 
     def accept(self, visitor: "BaseField") -> None | Null:  # type: ignore[return]
-        if visitor.value is null:  # TODO
+        if visitor._value is null:  # TODO
             return null
-        assert isinstance(visitor.value, MDecimal)
-        is_need_rounding = visitor.value.as_tuple().exponent < visitor.round_to
+        assert isinstance(visitor._value, MDecimal)
+        is_need_rounding = visitor._value.as_tuple().exponent < visitor.round_to
         round_to_below_zero = visitor.round_to < 0
         match is_need_rounding, round_to_below_zero:
             case True, True:
                 twoplaces = MDecimal(10) ** visitor.round_to
-                visitor.value = visitor.value.quantize(twoplaces)
+                visitor._value = visitor._value.quantize(twoplaces)
             case _, False:
-                int_len = len(str(int(visitor.value)))  # TODO
+                int_len = len(str(int(visitor._value)))  # TODO
                 if int_len > visitor.round_to:
                     with localcontext() as ctx:
                         ctx.prec = int_len - visitor.round_to
-                        visitor.value = +visitor.value  # type: ignore
+                        visitor._value = +visitor._value  # type: ignore

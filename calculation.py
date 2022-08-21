@@ -50,6 +50,6 @@ class Group(Subject):  # Group == Definition
 
     def calculation_current_field(self, current_field: "BaseField"):
         current_field.calc()
-        self.cm.update({current_field.symbol: current_field.value})
+        self.cm.update({current_field.symbol: current_field._value})
         self.detach(current_field)  # type: ignore
         self.notify()
