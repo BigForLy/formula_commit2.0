@@ -168,7 +168,7 @@ class StringField(BaseField):
             return value
 
     def calc(self):
-        if self._value or isinstance(self._value, MDecimal):  # TODO and
+        if isinstance(self._value, MDecimal):
             self._update_value_with_component()
         if isinstance(self._value, str) and not self.value_is_repr():
             self._value = repr(self._value)
