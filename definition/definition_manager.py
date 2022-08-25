@@ -1,6 +1,6 @@
 from typing import Dict, List
 from collections import defaultdict, deque
-from calculation import Calculation
+from group import GroupManager
 from chain_map import DefaultListChainMap
 from fields import BaseField
 from .definition import Definition
@@ -24,7 +24,7 @@ class DefinitionManager:
             self.add_field(current_field)
 
     def calculation(self):
-        calc = Calculation()
+        calc = GroupManager()
 
         for definition in self._definitions.values():
             with self._cm_parent.child() as cm:
