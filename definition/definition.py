@@ -20,10 +20,6 @@ class Definition:
             # Если установлен параметр ввод вручную или игнорировать, поля не должны менять свое значение
             current_field._value_only = True
 
-        # Если у current_field не заполнен символ, создаем его
-        if not current_field.symbol:
-            current_field.create_symbol()
-
         if not self.__check_ignore:
             # Если у определения не активен параметр игнорировать, добавляем поле в расчет
             self.add_in_deque(current_field)
