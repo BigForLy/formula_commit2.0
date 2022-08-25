@@ -14,7 +14,25 @@ if TYPE_CHECKING:
 parser = ParserManager()
 
 
-class BaseField(ABC):
+class IField(ABC):
+    @abstractmethod
+    def convert_value(self, value) -> str | MDecimal | int:
+        """ """
+        raise NotImplementedError
+
+    @abstractmethod
+    def calc(self):
+        """
+        result processing method
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def value(self):
+        raise NotImplementedError
+
+
+class BaseField(IField, ABC):
     """
     Базовый класс для поля
     """
@@ -45,22 +63,9 @@ class BaseField(ABC):
 
         self._update_round_to(round_to)
 
-    def convert_value(self, value) -> str | MDecimal | int:
-        return value
-
     def check_required_field(self):
         if self.required_field and self._value in ("", None) and not self.formula:
             raise ValueError(f"Не заполнено обязательное поле: (symbol: {self.symbol})")
-
-    @abstractmethod
-    def calc(self):
-        """
-        result processing method
-        """
-        raise NotImplementedError
-
-    def create_symbol(self):
-        self.symbol = str(f"{FIRST_SYMBOL_BY_ELEMENT}{uuid.uuid4()}")
 
     def update(self, subject: "Group") -> None:
         self.dependence = parser.elements_with_text(
@@ -113,9 +118,6 @@ class BaseField(ABC):
         if round_to:
             self._calc_component.append(ConcreteComponentRoundTo)
 
-    def value(self):
-        return self._value
-
 
 class NumericField(BaseField):
     """
@@ -139,6 +141,9 @@ class NumericField(BaseField):
     def calc(self):
         if self._value:
             self._update_value_with_component()
+
+    def value(self):
+        return self._value
 
 
 class StringField(BaseField):
@@ -184,3 +189,6 @@ class BoolField(BaseField):
 
     def convert_value(self, value) -> str | MDecimal | int:
         return 1 if value in (True, 1, "True") else 0
+
+    def value(self):
+        return self._value
