@@ -17,7 +17,8 @@ class Definition:
     def add_field(self, current_field: "BaseField"):
         # все значения полей после активации флага становятся константами
         if self.__input_manual or self.__check_ignore:
-            # Если установлен параметр ввод вручную или игнорировать, поля не должны менять свое значение
+            # Если установлен параметр ввод вручную или игнорировать,
+            # поля не должны менять свое значение
             current_field._value_only = True
 
         if not self.__check_ignore:

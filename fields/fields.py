@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
-import uuid
-from calculation import calculation
 from parser import ParserManager
+from calculation import calculation
 from components import IComponent, ConcreteComponentRoundTo
 from decimal_ import MDecimal
 from consts import FIRST_SYMBOL_BY_ELEMENT
@@ -67,6 +66,10 @@ class BaseField(IField, ABC):
         if self.required_field and self._value in ("", None) and not self.formula:
             raise ValueError(f"Не заполнено обязательное поле: (symbol: {self.symbol})")
 
+    @property
+    def is_need_update(self) -> bool:
+        return bool(self.formula and not self._value_only)
+
     def update(self, subject: "Group") -> None:
         self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT
@@ -93,7 +96,9 @@ class BaseField(IField, ABC):
             self._value = value
         except (SystemExit, Exception) as exc:
             raise ValueError(
-                f"Ошибка в формуле: symbol={self.symbol}, definition_number={self.definition_number}, formula={self.formula}"
+                f"Ошибка в формуле: symbol={self.symbol}, "
+                f"definition_number={self.definition_number}, "
+                f"formula={self.formula}"
             ) from exc
 
     def convert_to_python_formula(self):
@@ -154,10 +159,10 @@ class StringField(BaseField):
     def convert_value(self, value) -> str | MDecimal | int:
         try:
             value = MDecimal(value)
-        except:
+        except InvalidOperation:
             value = repr(value)
-        finally:
-            return value
+
+        return value
 
     def calc(self):
         if isinstance(self._value, MDecimal):

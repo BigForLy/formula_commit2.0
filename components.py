@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from decimal import localcontext
-from decimal_ import MDecimal
 from typing import TYPE_CHECKING
+from decimal_ import MDecimal
 from consts import null
 from types_ import Null
+
 
 if TYPE_CHECKING:
     from fields import BaseField
@@ -11,7 +12,7 @@ if TYPE_CHECKING:
 
 class IComponent(ABC):
     @abstractmethod
-    def accept(self, visitor: "BaseField") -> None | Null:
+    def accept(self, visitor: "BaseField") -> Null | bool:
         pass
 
 
@@ -20,7 +21,7 @@ class ConcreteComponentRoundTo(IComponent):
     округление
     """
 
-    def accept(self, visitor: "BaseField") -> None | Null:  # type: ignore[return]
+    def accept(self, visitor: "BaseField") -> Null | bool:
         if visitor._value is null:  # TODO
             return null
         assert isinstance(visitor._value, MDecimal)
@@ -36,3 +37,4 @@ class ConcreteComponentRoundTo(IComponent):
                     with localcontext() as ctx:
                         ctx.prec = int_len - visitor.round_to
                         visitor._value = +visitor._value  # type: ignore
+        return True

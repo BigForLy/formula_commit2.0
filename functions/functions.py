@@ -1,9 +1,9 @@
 from __future__ import with_statement
 from collections.abc import Iterable
 from typing import Any, List, SupportsFloat, SupportsIndex, Tuple
+from math import sqrt
 from decimal_ import MDecimal
 from consts import null
-from math import sqrt
 
 
 def check_nullable(func):
@@ -90,7 +90,7 @@ class ReplaceFunc(BaseFunc):
     def __call__(self, *args: Tuple[str]) -> Any:
         assert len(args) == 3, f"Некоректная формула: {args=}"
         assert isinstance(args[0], (str, MDecimal))
-        assert all([isinstance(arg, str) for arg in args[1:]])
+        assert all(isinstance(arg, str) for arg in args[1:])
         string: str = args[0] if isinstance(args[0], str) else str(args[0])
         return string.replace(args[1], args[2])
 
