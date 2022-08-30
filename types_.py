@@ -30,6 +30,9 @@ class Null:
     def __iter__(self):
         return []
 
+    def __next__(self):
+        raise StopIteration
+
     def __bool__(self):
         return False
 
@@ -58,4 +61,4 @@ class Null:
         return float("nan") >= other
 
     def __repr__(self) -> str:
-        return f"null"
+        return "null"

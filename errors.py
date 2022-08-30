@@ -9,6 +9,8 @@ class ObserversNotEmpty(BaseException):
         obs = []
         for current_field in observers:
             obs.append(
-                f"(symbol: {current_field.symbol}, definition_number: {current_field.definition_number}, formula: {current_field.formula})"
+                f"(symbol: {current_field.symbol}, definition_number:"
+                f" {current_field.definition_number}, "
+                f"formula: {current_field.formula})"
             )
         super().__init__(self.msg + " [" + ",".join(obs) + "]")
