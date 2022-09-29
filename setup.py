@@ -1,39 +1,36 @@
-import setuptools
+from setuptools import find_packages, setup
 
-with open("README.md", "r") as fh:
+with open('README.md') as f:
+    long_description = f.read()
 
-    long_description = fh.read()
 
-setuptools.setup(
-
-    name="formula_commit",
-
-    version="1.0.0",
-
-    author="BigForLy",
-
-    author_email="authorname@templatepackage.com",
-
-    description="Template Setup.py package",
-
+setup(
+    name='formula_commit',
+    packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
+    version='1.0.0',
+    license='MIT',
+    license_files='LICENSE',
+    author='RB387',
+    author_email='121',
+    description='Python Dependency Injector based on interface binding',
+    url='https://github.com/BigForLy/formula_commit2.0',
+    download_url='https://github.com/BigForLy/formula_commit2.0/archive/refs/tags/1.0.0.zip',
+    python_requires='>=3.8',
+    include_package_data=True,
     long_description=long_description,
-
     long_description_content_type="text/markdown",
-
-    url="https://github.com/BigForLy/formula_commit",
-
-    packages=setuptools.find_packages(),
-
     classifiers=[
-
-        "Programming Language :: Python :: 3",
-
-        "License :: OSI Approved :: MIT License",
-
-        "Operating System :: OS Independent",
-
+        'Topic :: Scientific/Engineering',
+        'Topic :: Software Development :: Build Tools',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'License :: OSI Approved :: MIT License',
+        'Programming Language :: Python :: 3.8',
+        'Operating System :: MacOS',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX',
+        'Operating System :: Unix',
+        'Operating System :: OS Independent',
     ],
-
-    python_requires='>=3.9',
-
+    install_requires=[],
 )
