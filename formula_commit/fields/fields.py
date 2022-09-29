@@ -65,7 +65,10 @@ class BaseField(IField, ABC):
 
     def check_required_field(self):
         if self.required_field and self._value in ("", None) and not self.formula:
-            raise ValueError(f"Не заполнено обязательное поле: (symbol: {self.symbol})")
+            raise ValueError(
+                f"Не заполнено обязательное поле: "
+                "(symbol: {self.symbol}, value: {self._value})"
+            )
 
     @property
     def is_need_update(self) -> bool:
@@ -194,7 +197,11 @@ class BoolField(BaseField):
         pass
 
     def convert_value(self, value) -> str | MDecimal | int:
-        return 1 if value in (True, 1, "True") else 0
+        if value in (True, 1, "True"):
+            return 1
+        elif value in (False, 0, "False"):
+            return 0
+        assert False, f"Некорректное значение для BoolField. value: {value}"
 
     def value(self):
         return self._value
