@@ -1,6 +1,6 @@
 import pytest
 
-from parser import ParserManager
+from formula_commit.parser import ParserManager
 
 
 @pytest.fixture

@@ -1,6 +1,6 @@
-from fields import NumericField
-from fields.fields import StringField
-from manage import FormulaCalculation
+from formula_commit.fields import NumericField
+from formula_commit.fields.fields import StringField  # TODO: сделать доступ из __init__
+from formula_commit.manage import FormulaCalculation
 
 
 class TestGostR58952_3_2020:

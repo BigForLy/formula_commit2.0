@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
-from parser import ParserManager
-from calculation import calculation
-from components import IComponent, ConcreteComponentRoundTo
-from decimal_ import MDecimal
-from consts import FIRST_SYMBOL_BY_ELEMENT
+from formula_commit.parser import ParserManager
+from formula_commit.calculation import calculation
+from formula_commit.components import IComponent, ConcreteComponentRoundTo
+from formula_commit.decimal_ import MDecimal
+from formula_commit.consts import FIRST_SYMBOL_BY_ELEMENT
 
 if TYPE_CHECKING:
     from group import Group

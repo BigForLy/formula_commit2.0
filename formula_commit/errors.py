@@ -1,5 +1,5 @@
 from typing import List
-from fields import BaseField
+from formula_commit.fields import BaseField
 
 
 class ObserversNotEmpty(BaseException):

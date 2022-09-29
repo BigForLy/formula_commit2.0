@@ -1,4 +1,4 @@
-from definition.definition_manager import DefinitionManager
+from formula_commit.definition.definition_manager import DefinitionManager
 
 
 class FormulaCalculation:

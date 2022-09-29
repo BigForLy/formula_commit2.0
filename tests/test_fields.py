@@ -1,6 +1,6 @@
 import pytest
-from decimal_ import MDecimal
-from fields import BoolField, NumericField
+from formula_commit.decimal_ import MDecimal
+from formula_commit.fields import BoolField, NumericField
 
 
 @pytest.fixture
@@ -26,9 +26,7 @@ def get_numeric_field_large_length_value():
 
 @pytest.fixture
 def get_numeric_field_int_value():
-    return NumericField(
-        symbol="@a", formula="", value=3, round_to=-3, primary_key=1
-    )
+    return NumericField(symbol="@a", formula="", value=3, round_to=-3, primary_key=1)
 
 
 @pytest.fixture

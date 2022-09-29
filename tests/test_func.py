@@ -1,8 +1,8 @@
-from decimal_ import MDecimal
 import pytest
 from contextlib import suppress
-from consts import null
-from functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc
+from formula_commit.decimal_ import MDecimal
+from formula_commit.consts import null
+from formula_commit.functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc
 
 
 @pytest.fixture

@@ -1,5 +1,5 @@
-from fields import BoolField, StringField, NumericField
-from manage import FormulaCalculation
+from formula_commit.fields import BoolField, StringField, NumericField
+from formula_commit.manage import FormulaCalculation
 
 
 class TestGost_17_2_4_06:

@@ -1,9 +1,9 @@
-from fields import BoolField, NumericField, StringField
-from manage import FormulaCalculation
-from memory_profiler import profile
 import time
-from errors import ObserversNotEmpty
 from contextlib import suppress
+from memory_profiler import profile
+from formula_commit.fields import BoolField, NumericField, StringField
+from formula_commit.manage import FormulaCalculation
+from formula_commit.errors import ObserversNotEmpty
 
 
 class TestCheckResult:

@@ -1,8 +1,8 @@
 from typing import Dict, List
 from collections import defaultdict, deque
-from group import GroupManager
-from chain_map import DefaultListChainMap
-from fields import BaseField
+from formula_commit.group import GroupManager
+from formula_commit.chain_map import DefaultListChainMap
+from formula_commit.fields import BaseField
 from .definition import Definition
 
 

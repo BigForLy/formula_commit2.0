@@ -1,9 +1,9 @@
 from collections import deque
 from typing import Deque
-from chain_map import DefaultListChainMap
-from errors import ObserversNotEmpty
-from fields import BaseField
-from observer import Subject
+from formula_commit.chain_map import DefaultListChainMap
+from formula_commit.errors import ObserversNotEmpty
+from formula_commit.fields import BaseField
+from formula_commit.observer import Subject
 
 
 class GroupManager:

@@ -1,6 +1,6 @@
 from collections import deque
 from typing import Deque, TYPE_CHECKING
-from parser import ParserManager
+from formula_commit.parser import ParserManager
 
 if TYPE_CHECKING:
     from fields import BaseField
