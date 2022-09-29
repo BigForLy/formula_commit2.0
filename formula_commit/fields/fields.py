@@ -15,7 +15,7 @@ parser = ParserManager()
 
 class IField(ABC):
     @abstractmethod
-    def convert_value(self, value) -> str | MDecimal | int:
+    def convert_value(self, value) -> str | MDecimal | int | bool:
         """ """
         raise NotImplementedError
 
@@ -59,7 +59,7 @@ class BaseField(IField, ABC):
         self.primary_key = primary_key
         self.dependence: Set[str] = set()
 
-        self._value: str | MDecimal | int = self.convert_value(value)
+        self.value = value
 
         self._update_round_to(round_to)
 
@@ -69,6 +69,14 @@ class BaseField(IField, ABC):
                 f"Не заполнено обязательное поле: "
                 f"(symbol: {self.symbol}, value: {self._value})"
             )
+
+    @property
+    def value(self):
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value: str | MDecimal | int = self.convert_value(value)
 
     @property
     def is_need_update(self) -> bool:
@@ -151,9 +159,6 @@ class NumericField(BaseField):
         if self._value:
             self._update_value_with_components()
 
-    def value(self):
-        return self._value
-
 
 class StringField(BaseField):
     """
@@ -162,11 +167,9 @@ class StringField(BaseField):
 
     def convert_value(self, value) -> str | MDecimal | int:
         try:
-            value = MDecimal(value)
+            return MDecimal(value)
         except InvalidOperation:
-            value = repr(value)
-
-        return value
+            return repr(value)
 
     def calc(self):
         if isinstance(self._value, MDecimal):
@@ -174,10 +177,15 @@ class StringField(BaseField):
         if isinstance(self._value, str) and not self.value_is_repr():
             self._value = repr(self._value)
 
+    @property
     def value(self):
         if self.value_is_repr():
             return self._value[1:-1]
         return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value: str | MDecimal | int = self.convert_value(value)
 
     def value_is_repr(self):
         return (
@@ -202,6 +210,3 @@ class BoolField(BaseField):
         elif value in (False, 0, "False"):
             return 0
         assert False, f"Некорректное значение для BoolField. value: {value}"
-
-    def value(self):
-        return self._value
