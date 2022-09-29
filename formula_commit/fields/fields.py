@@ -67,7 +67,7 @@ class BaseField(IField, ABC):
         if self.required_field and self._value in ("", None) and not self.formula:
             raise ValueError(
                 f"Не заполнено обязательное поле: "
-                "(symbol: {self.symbol}, value: {self._value})"
+                f"(symbol: {self.symbol}, value: {self._value})"
             )
 
     @property
