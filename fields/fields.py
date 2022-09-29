@@ -48,6 +48,7 @@ class BaseField(IField, ABC):
         formula_check: str = "",  # TODO
         round_with_zeros=None,  # TODO
         required_field: bool = True,  # TODO
+        **kwargs,
     ) -> None:
         self._calc_component: List[Type[IComponent]] = []
         self.required_field = required_field
