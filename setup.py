@@ -14,7 +14,7 @@ setup(
     author_email='121',
     description='Python Dependency Injector based on interface binding',
     url='https://github.com/BigForLy/formula_commit2.0',
-    download_url='https://github.com/BigForLy/formula_commit2.0/archive/refs/tags/1.0.0.zip',
+    # download_url='https://github.com/BigForLy/formula_commit2.0/archive/refs/tags/1.0.0.zip',
     python_requires='>=3.8',
     include_package_data=True,
     long_description=long_description,
@@ -32,5 +32,5 @@ setup(
         'Operating System :: Unix',
         'Operating System :: OS Independent',
     ],
-    install_requires=[],
+    install_requires=["memory-profiler==0.60.0"],
 )
