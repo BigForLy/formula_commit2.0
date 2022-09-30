@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC, abstractmethod
 from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
@@ -53,7 +54,7 @@ class BaseField(IField, ABC):
         self._calc_component: List[Type[IComponent]] = []
         self.required_field = required_field
         self.formula = formula
-        self.symbol = symbol
+        self.__symbol_update(symbol)
         self._value_only = False  # значение является константой
         self.definition_number = definition_number
         self.primary_key = primary_key
@@ -62,6 +63,34 @@ class BaseField(IField, ABC):
         self.value = value
 
         self._update_round_to(round_to)
+
+    def __symbol_update(self, symbol):
+        if self.__is_need_creating_symbol(symbol):
+            symbol = self.__creating_symbol()
+        if not self.__is_symbol_correct(symbol):
+            symbol = self.__symbol_adjustment(symbol)
+
+        self.symbol = symbol
+
+    @staticmethod
+    def __is_symbol_correct(symbol):
+        if symbol and symbol[0] == FIRST_SYMBOL_BY_ELEMENT:
+            return True
+        return False
+
+    @staticmethod
+    def __symbol_adjustment(symbol):
+        return FIRST_SYMBOL_BY_ELEMENT + symbol
+
+    @staticmethod
+    def __is_need_creating_symbol(symbol):
+        if not symbol:
+            return True
+        return False
+
+    @staticmethod
+    def __creating_symbol():
+        return str(uuid.uuid4())
 
     def check_required_field(self):
         if self.required_field and self._value in ("", None) and not self.formula:
