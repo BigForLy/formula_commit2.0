@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import List, Protocol
+from collections import defaultdict
+from typing import Dict, List, Protocol
 from contextlib import suppress
 
 
@@ -10,25 +11,32 @@ class Observer(Protocol):
 
 class Subject:
     def __init__(self) -> None:
-        self._observers: List[Observer] = []
+        self._observers: Dict[str, List[Observer]] = defaultdict(list)
 
-    def attach(self, observer: Observer):
-        if observer not in self._observers:
-            self._observers.append(observer)
+    def attach(self, observer: Observer, symbol: str):
+        if observer not in self._observers[symbol]:
+            self._observers[symbol].append(observer)
 
     def detach(self, observer: Observer):
-        with suppress(ValueError):
-            self._observers.remove(observer)
+        for key, _ in self._observers.items():
+            with suppress(ValueError):
+                self._observers[key].remove(observer)
 
-    def notify(self, modifier: Observer | None = None) -> None:
-        for observer in self._observers:
-            if modifier != observer:
-                observer.update(self)
+    def notify(self, symbol: str) -> None:
+        for observer in self._observers[symbol]:
+            observer.update(self)
 
     def pop_observers(self):
-        yield from self._observers
-        self._observers = []
+        for _, values in self._observers.items():
+            if values:
+                yield from values  # TODO: возвращает список значений
+        self._observers.clear()
 
     @property
     def is_observers_empty(self) -> bool:
-        return not self._observers
+        for _, value in self._observers.items():
+            if value:
+                break
+        else:
+            return True
+        return False

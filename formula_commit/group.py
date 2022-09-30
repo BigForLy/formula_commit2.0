@@ -41,10 +41,8 @@ class Group(Subject):  # Group == Definition
             current_field.check_required_field()
             if current_field.is_need_update:
                 current_field.update(self)
-                if current_field.dependence:
-                    self.attach(
-                        current_field
-                    )  # TODO: реализовать подписку на конкретные атрибуты
+                for item in current_field.dependence:
+                    self.attach(current_field, item)
             else:
                 self.calculation_current_field(current_field)
 
@@ -52,4 +50,4 @@ class Group(Subject):  # Group == Definition
         current_field.calc()
         self.cm.update({current_field.symbol: current_field._value})
         self.detach(current_field)  # type: ignore
-        self.notify()
+        self.notify(current_field.symbol)
