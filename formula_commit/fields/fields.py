@@ -233,6 +233,10 @@ class BoolField(BaseField):
     def calc(self):
         pass
 
+    @property
+    def value(self):
+        return True if self._value else False
+
     def convert_value(self, value) -> str | MDecimal | int:
         if value in (True, 1, "True"):
             return 1
