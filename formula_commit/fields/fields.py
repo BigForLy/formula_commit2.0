@@ -55,7 +55,8 @@ class BaseField(IField, ABC):
         self.required_field = required_field
         self.formula = formula
         self.__symbol_update(symbol)
-        self._value_only = False  # значение является константой
+        # изначально считаем, что поле рассчитывается по формуле
+        self._value_only = False
         self.definition_number = definition_number
         self.primary_key = primary_key
         self.dependence: Set[str] = set()
@@ -66,6 +67,12 @@ class BaseField(IField, ABC):
             raise NotImplementedError
 
         self._update_round_to(round_to)
+
+        self._repr_attributes = (
+            f"{definition_number=}, {symbol=}, "
+            f"{formula=}, value={str(self._value)}, {primary_key=}, {round_to=},"
+            f" {formula_check=}, {round_with_zeros=}, {required_field=}"
+        )
 
     def __symbol_update(self, symbol):
         if self.__is_need_creating_symbol(symbol):
@@ -191,6 +198,9 @@ class NumericField(BaseField):
         if self._value:
             self._update_value_with_components()
 
+    def __repr__(self) -> str:
+        return f"NumericField({self._repr_attributes})"
+
 
 class StringField(BaseField):
     """
@@ -227,6 +237,9 @@ class StringField(BaseField):
             and self._value[-1] in ("'", '"')
         )
 
+    def __repr__(self) -> str:
+        return f"StringField({self._repr_attributes})"
+
 
 class BoolField(BaseField):
     """
@@ -250,3 +263,6 @@ class BoolField(BaseField):
         elif value in (False, 0, "False"):
             return 0
         assert False, f"Некорректное значение для BoolField. value: {value}"
+
+    def __repr__(self) -> str:
+        return f"BoolField({self._repr_attributes})"
