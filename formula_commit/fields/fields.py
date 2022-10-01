@@ -16,7 +16,7 @@ parser = ParserManager()
 
 class IField(ABC):
     @abstractmethod
-    def convert_value(self, value) -> str | MDecimal | int | bool:
+    def _convert_value(self, value) -> str | MDecimal | int | bool:
         """ """
         raise NotImplementedError
 
@@ -48,7 +48,7 @@ class BaseField(IField, ABC):
         round_to: int = 0,
         formula_check: str = "",  # TODO
         round_with_zeros=None,  # TODO
-        required_field: bool = True,  # TODO
+        required_field: bool = True,
         **kwargs,
     ) -> None:
         self._calc_component: List[Type[IComponent]] = []
@@ -105,7 +105,7 @@ class BaseField(IField, ABC):
 
     @value.setter
     def value(self, value):
-        self._value: str | MDecimal | int = self.convert_value(value)
+        self._value: str | MDecimal | int = self._convert_value(value)
 
     @property
     def is_need_update(self) -> bool:
@@ -170,7 +170,7 @@ class NumericField(BaseField):
     Числовое поле
     """
 
-    def convert_value(self, value) -> str | MDecimal | int:
+    def _convert_value(self, value) -> str | MDecimal | int:
         try:
             return (
                 MDecimal(str(value))
@@ -194,7 +194,7 @@ class StringField(BaseField):
     Строковое поле
     """
 
-    def convert_value(self, value) -> str | MDecimal | int:
+    def _convert_value(self, value) -> str | MDecimal | int:
         try:
             return MDecimal(value)
         except InvalidOperation:
@@ -214,7 +214,7 @@ class StringField(BaseField):
 
     @value.setter
     def value(self, value):
-        self._value: str | MDecimal | int = self.convert_value(value)
+        self._value: str | MDecimal | int = self._convert_value(value)
 
     def value_is_repr(self):
         return (
@@ -237,7 +237,11 @@ class BoolField(BaseField):
     def value(self):
         return True if self._value else False
 
-    def convert_value(self, value) -> str | MDecimal | int:
+    @value.setter
+    def value(self, value):
+        self._value: str | MDecimal | int = self._convert_value(value)
+
+    def _convert_value(self, value) -> str | MDecimal | int:
         if value in (True, 1, "True"):
             return 1
         elif value in (False, 0, "False"):
