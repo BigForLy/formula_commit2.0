@@ -47,7 +47,7 @@ class BaseField(IField, ABC):
         primary_key: Any,
         round_to: int = 0,
         formula_check: str = "",  # TODO
-        round_with_zeros=None,  # TODO
+        round_with_zeros: bool = False,  # TODO
         required_field: bool = True,
         **kwargs,
     ) -> None:
@@ -61,6 +61,9 @@ class BaseField(IField, ABC):
         self.dependence: Set[str] = set()
 
         self.value = value
+
+        if round_with_zeros:
+            raise NotImplementedError
 
         self._update_round_to(round_to)
 

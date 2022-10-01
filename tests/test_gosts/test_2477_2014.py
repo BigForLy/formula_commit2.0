@@ -23,8 +23,8 @@ class TestGost_2477_2014:
 
                 StringField(symbol="@r", formula="avg(@exp)", value="", primary_key="14")]
         result = FormulaCalculation(data).calc()
-        assert result == {'1': '2', '2': 'Да', '3': '1', '4': '1', '5': '1', '6': '0', '7': '', '8': '1',
-                          '9': '1', '10': '0', '11': '0', '12': '100', '13': '100', '14': '100'}, f"Неверное решение: {result}"
+        assert result == {'1': '2', '2': 'Да', '3': '1', '4': '1', '5': 'True', '6': 'False', '7': '', '8': '1',
+                          '9': '1', '10': 'False', '11': 'False', '12': '100', '13': '100', '14': '100'}, f"Неверное решение: {result}"
 
     def test_ResultFind_gost_2477_2014_all_check(self):
         data = [StringField(symbol="", formula="", value="2", primary_key="1"),
@@ -45,5 +45,5 @@ class TestGost_2477_2014:
 
                 StringField(symbol="@r", formula="avg(@exp)", value="", primary_key="14")]
         result = FormulaCalculation(data).calc()
-        assert result == {'1': '2', '2': 'Да', '3': '1', '4': '1', '5': '1', '6': '0', '7': '7', '8': '1',
-                          '9': '1', '10': '1', '11': '0', '12': '8', '13': 'null', '14': 'null'}, f"Неверное решение: {result}"
+        assert result == {'1': '2', '2': 'Да', '3': '1', '4': '1', '5': 'True', '6': 'False', '7': '7', '8': '1',
+                          '9': '1', '10': 'True', '11': 'False', '12': '8', '13': 'null', '14': 'null'}, f"Неверное решение: {result}"

@@ -160,8 +160,8 @@ class TestAllFieldsCheckIgnore:
 
                 NumericField(symbol="@av", formula="avg(@m)", value="", primary_key="7")]
         result = FormulaCalculation(data).calc()
-        assert result == {'1': '1', '2': '1', '3': '0', 
-                          '4': '1', '5': '1', '6': '0', '7': 'null'}, f"Неверное решение: {result}"
+        assert result == {'1': '1', '2': 'True', '3': 'False', 
+                          '4': '1', '5': 'True', '6': 'False', '7': 'null'}, f"Неверное решение: {result}"
 
 
 class TestIncorrectFormula:
@@ -172,7 +172,7 @@ class TestIncorrectFormula:
                 NumericField(symbol="@av", formula="@m", value="", primary_key="3"),
                 NumericField(symbol="@av2", formula="@av+1", value="", primary_key="4")]
         result = FormulaCalculation(data).calc()
-        assert result == {'1': '1', '2': '1', '3': 'null', '4': 'null'}, f"Неверное решение: {result}"
+        assert result == {'1': '1', '2': 'True', '3': 'null', '4': 'null'}, f"Неверное решение: {result}"
 
     def test_not_field_in_formula(self):
         data = [NumericField(symbol="@m", value="1", definition_number="1", formula="", primary_key="1"),
@@ -189,7 +189,7 @@ class TestIncorrectFormula:
 
                 NumericField(symbol="@av", formula="if(avg(@m) < 2, 1,2)", value="", primary_key="3")]
         result = FormulaCalculation(data).calc()
-        assert result == {'1': '1', '2': '1', '3': '2'}, f"Неверное решение: {result}"
+        assert result == {'1': '1', '2': 'True', '3': '2'}, f"Неверное решение: {result}"
 
     def test_null_equal(self):
         data = [NumericField(symbol="@m", value="1", definition_number="1", formula="", primary_key="1"),
@@ -197,7 +197,7 @@ class TestIncorrectFormula:
 
                 NumericField(symbol="@av", formula="if(@m <> 2, 1,2)", value="", primary_key="3")]
         result = FormulaCalculation(data).calc()
-        assert result == {'1': '1', '2': '1', '3': '2'}, f"Неверное решение: {result}"
+        assert result == {'1': '1', '2': 'True', '3': '2'}, f"Неверное решение: {result}"
 
     def test_empty_value_in_calc(self):
         data = [NumericField(symbol="@m", value="", definition_number="1", formula="", required_field=False, primary_key="1"),
