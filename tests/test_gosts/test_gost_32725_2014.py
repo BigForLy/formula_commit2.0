@@ -301,8 +301,8 @@ class TestGostR58952_3_2020:
         assert result == {
             1: "",
             2: "",
-            3: "None",
-            4: "None",
+            3: None,
+            4: None,
             5: "False",
             6: "True",
             7: "8.5",

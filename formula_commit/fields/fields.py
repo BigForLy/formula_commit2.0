@@ -1,3 +1,4 @@
+from types import NoneType
 import uuid
 from abc import ABC, abstractmethod
 from decimal import InvalidOperation
@@ -120,7 +121,7 @@ class BaseField(IField, ABC):
 
     @property
     def value(self):
-        return self._value
+        return str(self._value)
 
     @value.setter
     def value(self, value):
@@ -207,12 +208,11 @@ class NumericField(BaseField):
 
     @property
     def value(self):
-        return (
-            int(self._value)
-            if isinstance(self._value, MDecimal)
-            and self._value.as_integer_ratio()[1] == 1
-            else self._value
-        )
+        if isinstance(self._value, NoneType):
+            return self._value
+        if isinstance(self._value, MDecimal) and self._value.as_integer_ratio()[1] == 1:
+            return str(int(self._value))
+        return str(self._value)
 
     @value.setter
     def value(self, value):
@@ -247,7 +247,7 @@ class StringField(BaseField):
     def value(self):
         if self.value_is_repr():
             return self._value[1:-1]
-        return self._value
+        return str(self._value)
 
     @value.setter
     def value(self, value):
@@ -275,7 +275,7 @@ class BoolField(BaseField):
 
     @property
     def value(self):
-        return True if self._value else False
+        return "True" if self._value else "False"
 
     @value.setter
     def value(self, value):
