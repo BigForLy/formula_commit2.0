@@ -70,11 +70,7 @@ class BaseField(IField, ABC):
 
         self.__round_with_zeros = round_with_zeros
 
-        self._repr_attributes = (
-            f"{definition_number=}, {symbol=}, "
-            f"{formula=}, value={str(self._value)}, {primary_key=}, {round_to=},"
-            f" {formula_check=}, {round_with_zeros=}, {required_field=}"
-        )
+        self.__formula_check = formula_check  # TODO: не реализованно
 
         self.__component_order()
 
@@ -182,6 +178,13 @@ class BaseField(IField, ABC):
         for component in self._calc_component:
             component().accept(self)
 
+    def __repr__(self) -> str:
+        return (
+            f"{self.definition_number=}, {self.symbol=}, "
+            f"{self.formula=}, value={str(self._value)}, {self.primary_key=}, {self.round_to=},"
+            f" {self.__formula_check=}, {self.__round_with_zeros=}, {self.required_field=}"
+        )
+
 
 class NumericField(BaseField):
     """
@@ -220,7 +223,7 @@ class NumericField(BaseField):
             self._update_value_with_components()
 
     def __repr__(self) -> str:
-        return f"NumericField({self._repr_attributes})"
+        return f"NumericField({super().__repr__()})"
 
 
 class StringField(BaseField):
@@ -259,7 +262,7 @@ class StringField(BaseField):
         )
 
     def __repr__(self) -> str:
-        return f"StringField({self._repr_attributes})"
+        return f"StringField({super().__repr__()})"
 
 
 class BoolField(BaseField):
@@ -286,4 +289,4 @@ class BoolField(BaseField):
         assert False, f"Некорректное значение для BoolField. value: {value}"
 
     def __repr__(self) -> str:
-        return f"BoolField({self._repr_attributes})"
+        return f"BoolField({super().__repr__()})"
