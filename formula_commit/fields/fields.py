@@ -4,7 +4,11 @@ from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
 from formula_commit.parser import ParserManager
 from formula_commit.calculation import calculation
-from formula_commit.components import IComponent, ConcreteComponentRoundTo
+from formula_commit.components import (
+    ConcreteComponentRoundWithZero,
+    IComponent,
+    ConcreteComponentRoundTo,
+)
 from formula_commit.decimal_ import MDecimal
 from formula_commit.consts import FIRST_SYMBOL_BY_ELEMENT
 
@@ -60,19 +64,28 @@ class BaseField(IField, ABC):
         self.definition_number = definition_number
         self.primary_key = primary_key
         self.dependence: Set[str] = set()
-
         self.value = value
 
-        if round_with_zeros:
-            raise NotImplementedError
+        self.round_to = round_to
 
-        self._update_round_to(round_to)
+        self.__round_with_zeros = round_with_zeros
 
         self._repr_attributes = (
             f"{definition_number=}, {symbol=}, "
             f"{formula=}, value={str(self._value)}, {primary_key=}, {round_to=},"
             f" {formula_check=}, {round_with_zeros=}, {required_field=}"
         )
+
+        self.__component_order()
+
+    def __component_order(self):
+        """
+        Устанавливает компоненты и их порядок
+        """
+        if self.round_to:
+            self._calc_component.append(ConcreteComponentRoundTo)
+        if self.__round_with_zeros:
+            self._calc_component.append(ConcreteComponentRoundWithZero)
 
     def __symbol_update(self, symbol):
         if self.__is_need_creating_symbol(symbol):
@@ -169,11 +182,6 @@ class BaseField(IField, ABC):
         for component in self._calc_component:
             component().accept(self)
 
-    def _update_round_to(self, round_to):
-        self.round_to = round_to
-        if round_to:
-            self._calc_component.append(ConcreteComponentRoundTo)
-
 
 class NumericField(BaseField):
     """
@@ -193,6 +201,19 @@ class NumericField(BaseField):
             ) from exc
         except Exception as exc:
             raise Exception from exc
+
+    @property
+    def value(self):
+        return (
+            int(self._value)
+            if isinstance(self._value, MDecimal)
+            and self._value.as_integer_ratio()[1] == 1
+            else self._value
+        )
+
+    @value.setter
+    def value(self, value):
+        self._value: str | MDecimal | int = self._convert_value(value)
 
     def calc(self):
         if self._value:

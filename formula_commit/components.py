@@ -38,3 +38,13 @@ class ConcreteComponentRoundTo(IComponent):
                         ctx.prec = int_len - visitor.round_to
                         visitor._value = +visitor._value  # type: ignore
         return True
+
+
+class ConcreteComponentRoundWithZero(IComponent):
+    """
+    дополнение нулями после запятой
+    """
+
+    def accept(self, visitor: "BaseField") -> str:
+        if isinstance(visitor._value, MDecimal):
+            visitor._value = f"{visitor._value:.{abs(visitor.round_to)}f}"
