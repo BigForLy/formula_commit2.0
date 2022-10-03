@@ -36,6 +36,8 @@ class MDecimal(Decimal):
     def __truediv__(self, other) -> MDecimal:
         if isinstance(other, float):
             return MDecimal(super().__truediv__(MDecimal(str(other))))
+
+        assert other != MDecimal("0"), "Деление на 0"
         return MDecimal(super().__truediv__(other))
 
     def __rtruediv__(self, other) -> MDecimal:

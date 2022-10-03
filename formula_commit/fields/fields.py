@@ -186,6 +186,11 @@ class BaseField(IField, ABC):
             f" {self.__formula_check=}, {self.__round_with_zeros=}, {self.required_field=}"
         )
 
+    def _is_convert_to_int(self):
+        return (
+            isinstance(self._value, MDecimal) and self._value.as_integer_ratio()[1] == 1
+        )
+
 
 class NumericField(BaseField):
     """
@@ -210,7 +215,7 @@ class NumericField(BaseField):
     def value(self):
         if isinstance(self._value, NoneType):
             return self._value
-        if isinstance(self._value, MDecimal) and self._value.as_integer_ratio()[1] == 1:
+        if self._is_convert_to_int():
             return str(int(self._value))
         return str(self._value)
 
@@ -247,6 +252,8 @@ class StringField(BaseField):
     def value(self):
         if self.value_is_repr():
             return self._value[1:-1]
+        if self._is_convert_to_int():
+            return str(int(self._value))
         return str(self._value)
 
     @value.setter
