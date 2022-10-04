@@ -29,7 +29,7 @@ class Subject:
     def pop_observers(self):
         for _, values in self._observers.items():
             if values:
-                yield from values  # TODO: возвращает список значений
+                yield from values
         self._observers.clear()
 
     @property

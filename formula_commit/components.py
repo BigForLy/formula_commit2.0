@@ -22,7 +22,7 @@ class ConcreteComponentRoundTo(IComponent):
     """
 
     def accept(self, visitor: "BaseField") -> Null | bool:
-        if visitor._value is null:  # TODO
+        if visitor._value is null:
             return null
         assert isinstance(visitor._value, MDecimal)
         is_need_rounding = visitor._value.as_tuple().exponent < visitor.round_to
@@ -32,7 +32,8 @@ class ConcreteComponentRoundTo(IComponent):
                 twoplaces = MDecimal(10) ** visitor.round_to
                 visitor._value = visitor._value.quantize(twoplaces)
             case _, False:
-                int_len = len(str(int(visitor._value)))  # TODO
+                # TODO: вероятно есть способ лучше для преобразования
+                int_len = len(str(int(visitor._value)))
                 if int_len > visitor.round_to:
                     with localcontext() as ctx:
                         ctx.prec = int_len - visitor.round_to

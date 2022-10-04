@@ -51,8 +51,8 @@ class BaseField(IField, ABC):
         value: int | float | str,
         primary_key: Any,
         round_to: int = 0,
-        formula_check: str = "",  # TODO
-        round_with_zeros: bool = False,  # TODO
+        formula_check: str = "",  # TODO: не реализованно
+        round_with_zeros: bool = False,
         required_field: bool = True,
         **kwargs,
     ) -> None:
@@ -71,7 +71,7 @@ class BaseField(IField, ABC):
 
         self.__round_with_zeros = round_with_zeros
 
-        self.__formula_check = formula_check  # TODO: не реализованно
+        self.__formula_check = formula_check
 
         self.__component_order()
 
@@ -152,7 +152,7 @@ class BaseField(IField, ABC):
     def formula_calculation(self):
         try:
             value = calculation(self.formula)
-            if isinstance(value, (int, float)):  # TODO
+            if isinstance(value, (int, float)):
                 value = MDecimal(str(value))
             self._value = value
         except (SystemExit, Exception) as exc:
@@ -164,7 +164,7 @@ class BaseField(IField, ABC):
 
     def convert_to_python_formula(self):
         self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
-        self.formula = "".join(parser.replace(self.formula, "avg", "avg", True))  # TODO
+        self.formula = "".join(parser.replace(self.formula, "avg", "avg", True))
         self.formula = "".join(parser.replace(self.formula, "replace", "replace", True))
         self.formula = "".join(parser.replace(self.formula, "sqrt", "sqrt", True))
         self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))
