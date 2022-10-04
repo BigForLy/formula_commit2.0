@@ -199,6 +199,8 @@ class NumericField(BaseField):
 
     def _convert_value(self, value) -> str | MDecimal | int:
         try:
+            if isinstance(value, str):
+                value = value.replace(",", ".")
             return (
                 MDecimal(str(value))
                 if value

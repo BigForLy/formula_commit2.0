@@ -1,4 +1,5 @@
 import pytest
+from contextlib import suppress
 from formula_commit.decimal_ import MDecimal
 from formula_commit.fields import BoolField, NumericField
 
@@ -48,3 +49,17 @@ def test_large_length_value(get_numeric_field_large_length_value: NumericField):
     assert get_numeric_field_large_length_value._value == MDecimal(
         "3.12121212"
     ), get_numeric_field_large_length_value._value
+
+
+def test_incorrect_numeric_field_value():
+    """
+    Проверяем, что корректно работает с разделителем ","
+    """
+    result = False
+    with suppress(ValueError):
+        NumericField(
+            symbol="@a", formula="", value="3,12121212", round_to=-1, primary_key=1
+        )
+        result = True
+
+    assert result, "Некорректное решение test_incorrect_numeric_field_value"
