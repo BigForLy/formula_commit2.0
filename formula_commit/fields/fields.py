@@ -137,9 +137,11 @@ class BaseField(IField, ABC):
         )
         for token in self.dependence:
             if token in subject.cm.maps[0]:
-                element = subject.cm[token]
+                token_value = subject.cm[token]
                 self.formula = "".join(
-                    parser.replace(self.formula, token, element, subject.cm.is_parent())
+                    parser.replace(
+                        self.formula, token, token_value, subject.cm.is_parent()
+                    )
                 )
         self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT

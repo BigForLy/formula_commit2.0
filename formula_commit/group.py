@@ -2,8 +2,10 @@ from collections import deque
 from typing import Deque
 from formula_commit.chain_map import DefaultListChainMap
 from formula_commit.errors import ObserversNotEmpty
-from formula_commit.fields import BaseField
+from formula_commit.fields import BaseField, NumericField
+from formula_commit.fields.fields import NumericField
 from formula_commit.observer import Subject
+from formula_commit.consts import null
 
 
 class GroupManager:
@@ -37,7 +39,7 @@ class Group(Subject):  # Group == Definition
 
     def calc(self):
         while self.dq:
-            current_field = self.dq.popleft()
+            current_field: BaseField = self.dq.popleft()
             current_field.check_required_field()
             if current_field.is_need_update:
                 current_field.update(self)
@@ -46,8 +48,17 @@ class Group(Subject):  # Group == Definition
             else:
                 self.calculation_current_field(current_field)
 
-    def calculation_current_field(self, current_field: "BaseField"):
+    def calculation_current_field(self, current_field: BaseField):
         current_field.calc()
-        self.cm.update({current_field.symbol: current_field._value})
+        self.cm.update(
+            {
+                current_field.symbol: (
+                    null
+                    if isinstance(current_field, NumericField)
+                    and current_field._value == ""
+                    else current_field._value
+                )
+            }
+        )
         self.detach(current_field)  # type: ignore
         self.notify(current_field.symbol)
