@@ -8,6 +8,7 @@ from .functions import (
     SqrtFunc,
     MaxFunc,
     MinFunc,
+    IfNullFunc,
 )
 from typing import Dict
 from .functions import BaseFunc
@@ -22,4 +23,5 @@ FUNC_CALLABLE: Dict[str, BaseFunc] = {
     "sqrt": SqrtFunc(),
     "max": MaxFunc(),
     "min": MinFunc(),
+    "ifnull": IfNullFunc(),
 }

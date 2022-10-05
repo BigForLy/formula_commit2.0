@@ -3,6 +3,7 @@ from contextlib import suppress
 from formula_commit.decimal_ import MDecimal
 from formula_commit.consts import null
 from formula_commit.functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc
+from formula_commit.functions.functions import IfNullFunc
 
 
 @pytest.fixture
@@ -104,3 +105,22 @@ class TestCount:
 
     def test_three_args(self, count_func):
         assert (result := count_func([1, 1, 2])) == 3, result
+
+
+@pytest.fixture
+def ifnull_func():
+    return IfNullFunc()
+
+
+class TestIfNull:
+    def test_null_args(self, ifnull_func):
+        assert (result := ifnull_func(null, null)) is null, result
+
+    def test_empty_args(self, ifnull_func):
+        assert (result := ifnull_func("", null)) == "", result
+
+    def test_three_args(self, ifnull_func):
+        assert (result := ifnull_func(None, "", 0)) == "", result
+
+    def test_two_args(self, ifnull_func):
+        assert (result := ifnull_func(None, 0)) == 0, result

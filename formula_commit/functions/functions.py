@@ -74,6 +74,24 @@ class CountFunc(BaseFunc):
         return len(arg)
 
 
+class IfNullFunc(BaseFunc):
+    def __call__(self, first_element, second_element, *args: Any) -> Any:
+        if self.__check_in_correct(first_element):
+            return first_element
+
+        if self.__check_in_correct(second_element):
+            return second_element
+
+        for element in args:
+            if self.__check_in_correct(element):
+                return element
+
+        return null
+
+    def __check_in_correct(self, element):
+        return element is not None and element is not null
+
+
 class SumFunc(BaseFunc):
     @check_nullable
     @return_first_if_once
