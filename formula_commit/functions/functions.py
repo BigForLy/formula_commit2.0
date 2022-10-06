@@ -36,7 +36,10 @@ def return_first_if_once(func):
 
 class BaseFunc:
     def __init__(self) -> None:
-        self.is_global = True  # взаимодействует со всеми определениями
+        # взаимодействует со всеми определениями
+        # если стоит True, всегда будет ждать значение в
+        # глобальной области видимости
+        self.is_global = True
 
 
 class AvgFunc(BaseFunc):
@@ -95,6 +98,7 @@ class IfNullFunc(BaseFunc):
 class CaseWhenFunc(BaseFunc):
     def __init__(self) -> None:
         super().__init__()
+        self.is_global = False
         self.result = "if "
 
     def __call__(self, arg: str) -> Any:

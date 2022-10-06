@@ -170,7 +170,8 @@ class BaseField(IField, ABC):
         self.formula = "".join(parser.replace(self.formula, "replace", "replace", True))
         self.formula = "".join(parser.replace(self.formula, "sqrt", "sqrt", True))
         # рассчитываем что перед case when всегда будет скобочка
-        self.formula = "".join(parser.replace(self.formula, "(case when", "case when(", True))
+        # не через парсер потому что меняем позицию скобки
+        self.formula = self.formula.replace("(case when", "case_when(")
         self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))
         self.formula = (
             self.formula.replace("=", "==")
@@ -185,9 +186,11 @@ class BaseField(IField, ABC):
 
     def __repr__(self) -> str:
         return (
-            f"{self.definition_number=}, {self.symbol=}, "
-            f"{self.formula=}, value={str(self._value)}, {self.primary_key=}, {self.round_to=},"
-            f" {self.__formula_check=}, {self.__round_with_zeros=}, {self.required_field=}"
+            f"definition_number={self.definition_number}, symbol={self.symbol}, "
+            f"formula={self.formula}, value={str(self._value)}, primary_key="
+            f"{self.primary_key}, round_to={self.round_to},"
+            f" formula_check={self.__formula_check}, round_with_zeros="
+            f"{self.__round_with_zeros}, required_field={self.required_field}"
         )
 
     def _is_convert_to_int(self):
