@@ -3,10 +3,6 @@ import uuid
 from abc import ABC, abstractmethod
 from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
-from formula_commit.fields.converters import (
-    function_converter,
-    if_converter,
-)
 from formula_commit.functions import FUNC_CALLABLE
 from formula_commit.parser import ParserManager
 from formula_commit.calculation import calculation
@@ -170,9 +166,8 @@ class BaseField(IField, ABC):
             ) from exc
 
     def convert_to_python_formula(self):
-        self.formula = if_converter(self.formula)
-
-        self.formula = function_converter(self.formula)
+        self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
+        self.formula = "".join(parser.safe_lower(self.formula))
         # рассчитываем что перед case when всегда будет скобочка
         # не через парсер потому что меняем позицию скобки
         self.formula = self.formula.replace("(case when", "case_when(")

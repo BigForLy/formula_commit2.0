@@ -75,19 +75,29 @@ class ParserManager:
             yield from _inner(param)
 
     def safe_lower(self, source_text: str):
-        python_syntax = {"and", "is", "not"}
+        def _inner(param: str):
+            lower_param = param.lower()
+            if (
+                (lower_param in lower_python_func_name)
+                or (lower_param in lower_python_constants)
+                or (lower_param in mysql_syntax)
+                or (lower_param in FUNC_CALLABLE)
+            ):
+                yield lower_param
+            else:
+                yield param
+
+        mysql_syntax = {"end", "then", "when", "else", "and", "is", "not"}
+        lower_python_func_name = {"sqrt"}
+        lower_python_constants = {"null"}
         param = ""
         for s in source_text:
             if s in self.operators:
-                lower_param = param.lower()
-                if (param not in python_syntax and lower_param in python_syntax) or (
-                    param not in python_syntax and lower_param in python_syntax
-                ):
-                    yield lower_param
-                yield param
+                yield from _inner(param)
+
+                yield s
+                param = ""
             else:
                 param += s
         if param:
-            yield param
-
-        return source_text
+            yield from _inner(param)
