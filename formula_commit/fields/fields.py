@@ -12,7 +12,7 @@ from formula_commit.components import (
     ConcreteComponentRoundTo,
 )
 from formula_commit.decimal_ import MDecimal
-from formula_commit.consts import FIRST_SYMBOL_BY_ELEMENT
+from formula_commit.consts import FIRST_SYMBOL_BY_ELEMENT, null
 
 if TYPE_CHECKING:
     from group import Group
@@ -138,7 +138,13 @@ class BaseField(IField, ABC):
         )
         for token in self.dependence:
             if token in subject.cm.maps[0]:
-                token_value = subject.cm[token]
+                token_value = subject.cm[token]  # переделать в __get_attribute__
+                if (
+                    isinstance(token_value, List)
+                    and len(token_value) == 1
+                    and token_value[0] is null
+                ):
+                    token_value = null
                 self.formula = "".join(
                     parser.replace(
                         self.formula, token, token_value, subject.cm.is_parent()

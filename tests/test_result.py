@@ -206,7 +206,7 @@ class TestIncorrectFormula:
         result = None
         with suppress(ValueError):
             result = FormulaCalculation(data).calc()
-        assert result == None, f"Неверное решение: {result}"
+        assert result == {'1': '', '2': 'null'}, f"Неверное решение: {result}"
 
     def test_no_required_field(self):
         result = None

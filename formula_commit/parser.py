@@ -129,10 +129,6 @@ class ParserManager:
                     param += s
             if param:
                 yield param
-            # # если не седлали замену элемента, то надо добавить последний элемент вконце
-            # # только в том случае если текст не пустой
-            # if not is_replaced and is_need_add_end_element:
-            #     yield end_text
 
         if replacement_text in source_text:
             n_bracket = 0
@@ -141,6 +137,8 @@ class ParserManager:
                 if (local_result := "".join(_inner(element))) and element != "(":
                     result += value + local_result
                     continue
+                # если не седлали замену элемента, то надо добавить последний элемент вконце
+                # только в том случае если текст не пустой
                 if not element or element[-1] != "(":  # если element
                     result += "')"
             return result
