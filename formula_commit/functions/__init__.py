@@ -9,6 +9,7 @@ from .functions import (
     MaxFunc,
     MinFunc,
     IfNullFunc,
+    CaseWhenFunc,
 )
 from typing import Dict
 from .functions import BaseFunc
@@ -24,4 +25,5 @@ FUNC_CALLABLE: Dict[str, BaseFunc] = {
     "max": MaxFunc(),
     "min": MinFunc(),
     "ifnull": IfNullFunc(),
+    "case_when": CaseWhenFunc(),
 }

@@ -2,7 +2,14 @@ import pytest
 from contextlib import suppress
 from formula_commit.decimal_ import MDecimal
 from formula_commit.consts import null
-from formula_commit.functions import AvgFunc, IfFunc, OnlyFunc, CountFunc, SumFunc
+from formula_commit.functions import (
+    AvgFunc,
+    IfFunc,
+    OnlyFunc,
+    CountFunc,
+    SumFunc,
+    CaseWhenFunc,
+)
 from formula_commit.functions.functions import IfNullFunc
 
 
@@ -124,3 +131,46 @@ class TestIfNull:
 
     def test_two_args(self, ifnull_func):
         assert (result := ifnull_func(None, 0)) == 0, result
+
+
+@pytest.fixture
+def case_when_func():
+    return CaseWhenFunc()
+
+
+class TestCaseWhen:
+    def test_v1(self, case_when_func):
+        assert (
+            result := case_when_func("0.8*null is null THEN NULL end")
+        ) == "null if 0.8*null is null else null", result
+
+    def test_v2(self, case_when_func):
+        assert (
+            result := case_when_func("0.8*1>=0 then 'B120' end")
+        ) == "'b120' if 0.8*1>=0 else null", result
+
+    def test_v3(self, case_when_func):
+        assert (
+            (
+                result := case_when_func(
+                    """0.8*1 is null then null
+                        when 0.8*1>=120 then 'B120'
+                        when 0.8*1>=110 then 'B110'
+                        when 0.8*1>=0 then 'B100' end"""
+                )
+            )
+            == "null if 0.8*1 is null else 'b120' if 0.8*1>=120 else 'b110'"
+            " if 0.8*1>=110 else 'b100' if 0.8*1>=0 else null"
+        ), result
+
+    def test_v4(self, case_when_func):
+        assert (
+            (
+                result := case_when_func(
+                    "0.8 * 1 IS NULL THEN NULL WHEN 0.8 * 1 >= 120"
+                    " THEN 'B120' ELSE 'не определён' END"
+                )
+            )
+            == "null if 0.8 * 1 is null else 'b120' else 'не определён'"
+            " if 0.8 * 1 >= 120 else null"
+        ), result

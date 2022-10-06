@@ -92,6 +92,36 @@ class IfNullFunc(BaseFunc):
         return element is not None and element is not null
 
 
+class CaseWhenFunc(BaseFunc):
+    def __init__(self) -> None:
+        super().__init__()
+        self.result = "if "
+
+    def __call__(self, arg: str) -> Any:
+        xs = arg.lower().split()
+        is_need_append_else = True
+        s = " ".join(xs)
+        if s[-3:] == "end":
+            s = s[:-3]
+        if " else " in arg:
+            is_need_append_else = False
+
+        result = []
+        # делим по "when" на условия
+        for element in s.split("when"):
+            # делим по "then" чтобы установить правильный порядок элементов
+            list_from_element = element.split("then")
+            # разворачиваем список чтобы элементы были в корректном для if порядке
+            # очищаем лишние пробелы и ставим заделитель if
+            element = " if ".join(x.strip() for x in reversed(list_from_element))
+            result.append(element)
+
+        result = " else ".join(result)
+        if is_need_append_else:
+            result = result + " else null"
+        return result
+
+
 class SumFunc(BaseFunc):
     @check_nullable
     @return_first_if_once

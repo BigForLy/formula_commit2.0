@@ -169,6 +169,8 @@ class BaseField(IField, ABC):
         self.formula = "".join(parser.replace(self.formula, "avg", "avg", True))
         self.formula = "".join(parser.replace(self.formula, "replace", "replace", True))
         self.formula = "".join(parser.replace(self.formula, "sqrt", "sqrt", True))
+        # рассчитываем что перед case when всегда будет скобочка
+        self.formula = "".join(parser.replace(self.formula, "(case when", "case when(", True))
         self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))
         self.formula = (
             self.formula.replace("=", "==")
