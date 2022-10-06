@@ -1,4 +1,4 @@
-from typing import Any, Deque, Generator, Set
+from typing import Any, Deque, Generator, Iterable, Set
 from collections import deque
 from formula_commit.consts import null
 from formula_commit.types_ import Null
@@ -40,7 +40,7 @@ class ParserManager:
         return set(token for token in self._parse(text) if search_element in token)
 
     def replace(
-        self, source_text: str, replacement_text: str, value: Any, all_: bool
+        self, source_text: Iterable, replacement_text: str, value: Any, all_: bool
     ) -> Generator[str, None, None]:
         def _inner(param: str):
             if param.lower() == replacement_text.lower():
@@ -73,3 +73,21 @@ class ParserManager:
                 param += s
         if param:
             yield from _inner(param)
+
+    def safe_lower(self, source_text: str):
+        python_syntax = {"and", "is", "not"}
+        param = ""
+        for s in source_text:
+            if s in self.operators:
+                lower_param = param.lower()
+                if (param not in python_syntax and lower_param in python_syntax) or (
+                    param not in python_syntax and lower_param in python_syntax
+                ):
+                    yield lower_param
+                yield param
+            else:
+                param += s
+        if param:
+            yield param
+
+        return source_text

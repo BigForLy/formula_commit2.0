@@ -3,6 +3,11 @@ import uuid
 from abc import ABC, abstractmethod
 from decimal import InvalidOperation
 from typing import Any, List, Set, TYPE_CHECKING, Type
+from formula_commit.fields.converters import (
+    function_converter,
+    if_converter,
+)
+from formula_commit.functions import FUNC_CALLABLE
 from formula_commit.parser import ParserManager
 from formula_commit.calculation import calculation
 from formula_commit.components import (
@@ -153,7 +158,7 @@ class BaseField(IField, ABC):
 
     def formula_calculation(self):
         try:
-            value = calculation(self.formula)
+            value = calculation(self.formula, **FUNC_CALLABLE)
             if isinstance(value, (int, float)):
                 value = MDecimal(str(value))
             self._value = value
@@ -165,13 +170,14 @@ class BaseField(IField, ABC):
             ) from exc
 
     def convert_to_python_formula(self):
-        self.formula = "".join(parser.replace(self.formula, "if", "if_", True))
-        self.formula = "".join(parser.replace(self.formula, "avg", "avg", True))
-        self.formula = "".join(parser.replace(self.formula, "replace", "replace", True))
-        self.formula = "".join(parser.replace(self.formula, "sqrt", "sqrt", True))
+        self.formula = if_converter(self.formula)
+
+        self.formula = function_converter(self.formula)
         # рассчитываем что перед case when всегда будет скобочка
         # не через парсер потому что меняем позицию скобки
         self.formula = self.formula.replace("(case when", "case_when(")
+        # убираем лишние символы
+        self.formula = self.formula.replace("\r\n", " ")
         self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))
         self.formula = (
             self.formula.replace("=", "==")

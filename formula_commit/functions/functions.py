@@ -2,6 +2,7 @@ from __future__ import with_statement
 from collections.abc import Iterable
 from typing import Any, List, SupportsFloat, SupportsIndex, Tuple
 from math import sqrt
+from formula_commit.calculation import calculation
 from formula_commit.decimal_ import MDecimal
 from formula_commit.consts import null
 
@@ -102,17 +103,23 @@ class CaseWhenFunc(BaseFunc):
         self.result = "if "
 
     def __call__(self, arg: str) -> Any:
-        xs = arg.lower().split()
-        is_need_append_else = True
-        s = " ".join(xs)
-        if s[-3:] == "end":
-            s = s[:-3]
-        if " else " in arg:
-            is_need_append_else = False
+        postfix = ""
+        # переводим всю формулу в нижний регистр
+        # разделяем на элементы и убираем лишние символы
+        xs = arg.split()
+        # востанавливаем формулу
+        formula = " ".join(xs)
+        if formula[-3:] == "end":
+            formula = formula[:-3]
+        if " else " in formula:
+            # is_need_append_else = False
+            formula, postfix = formula.split("else")
+        else:
+            postfix = "null"
 
         result = []
         # делим по "when" на условия
-        for element in s.split("when"):
+        for element in formula.split("when"):
             # делим по "then" чтобы установить правильный порядок элементов
             list_from_element = element.split("then")
             # разворачиваем список чтобы элементы были в корректном для if порядке
@@ -121,9 +128,9 @@ class CaseWhenFunc(BaseFunc):
             result.append(element)
 
         result = " else ".join(result)
-        if is_need_append_else:
-            result = result + " else null"
-        return result
+        if postfix:
+            result += " else " + postfix
+        return calculation(result)
 
 
 class SumFunc(BaseFunc):

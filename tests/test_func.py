@@ -142,12 +142,10 @@ class TestCaseWhen:
     def test_v1(self, case_when_func):
         assert (
             result := case_when_func("0.8*null is null THEN NULL end")
-        ) == "null if 0.8*null is null else null", result
+        ) is null, result
 
     def test_v2(self, case_when_func):
-        assert (
-            result := case_when_func("0.8*1>=0 then 'B120' end")
-        ) == "'b120' if 0.8*1>=0 else null", result
+        assert (result := case_when_func("0.8*1>=0 then 'B120' end")) == "B120", result
 
     def test_v3(self, case_when_func):
         assert (
@@ -159,18 +157,13 @@ class TestCaseWhen:
                         when 0.8*1>=0 then 'B100' end"""
                 )
             )
-            == "null if 0.8*1 is null else 'b120' if 0.8*1>=120 else 'b110'"
-            " if 0.8*1>=110 else 'b100' if 0.8*1>=0 else null"
+            == "B100"
         ), result
 
     def test_v4(self, case_when_func):
         assert (
-            (
-                result := case_when_func(
-                    "0.8 * 1 IS NULL THEN NULL WHEN 0.8 * 1 >= 120"
-                    " THEN 'B120' ELSE 'не определён' END"
-                )
+            result := case_when_func(
+                "0.8 * 1 IS NULL THEN NULL WHEN 0.8 * 1 >= 120"
+                " THEN 'B120' ELSE 'не определён' END"
             )
-            == "null if 0.8 * 1 is null else 'b120' else 'не определён'"
-            " if 0.8 * 1 >= 120 else null"
-        ), result
+        ) == "не определён", result
