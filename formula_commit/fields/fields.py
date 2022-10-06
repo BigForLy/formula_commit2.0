@@ -170,7 +170,9 @@ class BaseField(IField, ABC):
         self.formula = "".join(parser.safe_lower(self.formula))
         # рассчитываем что перед case when всегда будет скобочка
         # не через парсер потому что меняем позицию скобки
-        self.formula = self.formula.replace("(case when", "case_when(")
+        self.formula = "".join(
+            parser.converter(self.formula, "case when", "case_when('", ")", "')")
+        )
         # убираем лишние символы
         self.formula = self.formula.replace("\r\n", " ")
         self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))

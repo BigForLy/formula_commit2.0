@@ -101,3 +101,47 @@ class ParserManager:
                 param += s
         if param:
             yield from _inner(param)
+
+    def converter(
+        self,
+        source_text: str,
+        replacement_text: str,
+        value: str,
+        end_of_element: str,
+        end_text: str,
+    ):
+        def _inner(text: str):
+            is_replaced = False
+            param = ""
+            for s in text:
+                if s in self.operators:
+                    if param:
+                        yield param
+
+                    if s == end_of_element and n_bracket <= 0 and not is_replaced:
+                        yield end_text
+                        is_replaced = True
+                    else:
+                        yield s
+
+                    param = ""
+                else:
+                    param += s
+            if param:
+                yield param
+            # # если не седлали замену элемента, то надо добавить последний элемент вконце
+            # # только в том случае если текст не пустой
+            # if not is_replaced and is_need_add_end_element:
+            #     yield end_text
+
+        if replacement_text in source_text:
+            n_bracket = 0
+            result = ""
+            for element in source_text.split(replacement_text)[::-1]:
+                if (local_result := "".join(_inner(element))) and element != "(":
+                    result += value + local_result
+                    continue
+                if not element or element[-1] != "(":  # если element
+                    result += "')"
+            return result
+        return source_text
