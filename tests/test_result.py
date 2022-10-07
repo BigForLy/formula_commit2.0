@@ -170,8 +170,8 @@ class TestIfFunc:
             "if(@minexp_1 is not null, 1, 2)"
         )
         data = [
-            NumericField(symbol="@minexp", formula="", difinition=1, value="1", round_to=-1, primary_key=1),
-            NumericField(symbol="@a", formula=formula, value="", difinition=1, round_to=-1, primary_key=2),
+            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=1),
+            NumericField(symbol="@a", formula=formula, value="", round_to=-1, primary_key=2),
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "1", 2: "1"}, f"Неверное решение: {result}"

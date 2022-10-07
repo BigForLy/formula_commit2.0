@@ -16,36 +16,36 @@ class DefaultListChainMap(ChainMap):
 
     def __getitem__(self, key: object):
         if isinstance(key, str) and "_" in key and self.is_parent:
-            symbol, difinition = self.__split_into_symbol_and_definition(key)
+            symbol, definition = self.__split_into_symbol_and_definition(key)
             xs = super().__getitem__(symbol)
             if not isinstance(xs, List):
                 raise ValueError(
                     "Что-то пошло не так! Ожидался список для ключа: " + key
                 )
-            if len(xs) < difinition:
+            if len(xs) < definition:
                 raise ValueError(
                     "Что-то пошло не так! Значений меньше необходимого: " + key
                 )
-            return xs[difinition - 1]
+            return xs[definition - 1]
         return super().__getitem__(key)
 
     def __contains__(self, key: object) -> bool:
         if isinstance(key, str) and "_" in key and self.is_parent:
-            symbol, difinition = self.__split_into_symbol_and_definition(key)
+            symbol, definition = self.__split_into_symbol_and_definition(key)
             return any(
-                symbol in m for m in self.maps[0] if len(self.maps[0][m]) >= difinition
+                symbol in m for m in self.maps[0] if len(self.maps[0][m]) >= definition
             )
         return any(key in m for m in self.maps[0])
 
     def __split_into_symbol_and_definition(self, key: str) -> Tuple[str, int]:
         try:
-            symbol, difinition = key.split("_")
-            difinition = int(difinition)
+            symbol, definition = key.split("_")
+            definition = int(definition)
         except ValueError as exc:
             raise ValueError(
                 "Не удалось разделить символ и определение " + key
             ) from exc
-        return symbol, difinition
+        return symbol, definition
 
     @contextmanager
     def child(self):
