@@ -111,6 +111,7 @@ class ParserManager:
         end_text: str,
     ):
         def _inner(text: str):
+            n_bracket = 0
             is_replaced = False
             param = ""
             for s in text:
@@ -124,6 +125,11 @@ class ParserManager:
                     else:
                         yield s
 
+                    if s == "(":
+                        n_bracket += 1
+                    if s == ")":
+                        n_bracket -= 1
+
                     param = ""
                 else:
                     param += s
@@ -131,7 +137,6 @@ class ParserManager:
                 yield param
 
         if replacement_text in source_text:
-            n_bracket = 0
             result = ""
             for element in source_text.split(replacement_text)[::-1]:
                 if (local_result := "".join(_inner(element))) and element != "(":

@@ -37,7 +37,8 @@ class DefaultListChainMap(ChainMap):
             )
         return any(key in m for m in self.maps[0])
 
-    def __split_into_symbol_and_definition(self, key: str) -> Tuple[str, int]:
+    @staticmethod
+    def __split_into_symbol_and_definition(key: str) -> Tuple[str, int]:
         try:
             symbol, definition = key.split("_")
             definition = int(definition)

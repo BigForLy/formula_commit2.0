@@ -159,11 +159,11 @@ class TestIfFunc:
             "when null>=6 then (null-@minexp-null)/(null-2) end)\r\n"
         )
         data = [
-            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=7),
-            NumericField(symbol="@a", formula=formula, value="1", round_to=-1, primary_key=8),
+            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=1),
+            NumericField(symbol="@a", formula=formula, value="1", round_to=-1, primary_key=2),
         ]
         result = FormulaCalculation(data).calc()
-        assert result == {1: "1", 2: "1"}, f"Неверное решение: {result}"
+        assert result == {1: "1", 2: "null"}, f"Неверное решение: {result}"
 
     def test_formula_v3(self):
         formula = (
