@@ -152,10 +152,7 @@ class BaseField(IField, ABC):
                     parser.replace(
                         self.formula,
                         token,
-                        # если значение имеет строковый тип, подставляем его представление
-                        repr(token_value)
-                        if isinstance(token_value, str)
-                        else token_value,
+                        token_value,
                         subject.cm.is_parent,
                     )
                 )

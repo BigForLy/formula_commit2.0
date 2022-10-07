@@ -27,12 +27,15 @@ class DefaultListChainMap(ChainMap):
                 raise ValueError(
                     "Что-то пошло не так! Значений меньше необходимого: " + key
                 )
-            return xs[definition - 1]
+            # если значение имеет строковый тип, подставляем его представление
+            result = xs[definition - 1]
+            return repr(result) if isinstance(result, str) else result
 
         result = super().__getitem__(key)
         if isinstance(result, List) and len(result) == 1 and result[0] is null:
             return null
-        return result
+        # если значение имеет строковый тип, подставляем его представление
+        return repr(result) if isinstance(result, str) else result
 
     def __contains__(self, key: object) -> bool:
         if isinstance(key, str) and "_" in key and self.is_parent:
