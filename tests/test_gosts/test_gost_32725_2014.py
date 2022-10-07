@@ -37,17 +37,37 @@ class TestGostR58952_3_2020:
                 primary_key=3,
             ),
             StringField(
-                symbol="", value="", formula="avg(@exp)", round_to=-2, primary_key=4
+                symbol="",
+                value="",
+                formula="avg(@exp)",
+                round_to=-2,
+                primary_key=4,
+                required_field=False,
             ),
-            StringField(symbol="r", value="", formula="", round_to=-2, primary_key=5),
+            StringField(
+                symbol="r",
+                value="",
+                formula="",
+                round_to=-2,
+                primary_key=5,
+                required_field=False,
+            ),
             StringField(
                 symbol="",
                 value="",
                 formula="max(@exp)-min(@exp)",
                 round_to=-2,
                 primary_key=6,
+                required_field=False,
             ),
-            StringField(symbol="", value="", formula="", round_to=0, primary_key=7),
+            StringField(
+                symbol="",
+                value="",
+                formula="",
+                round_to=0,
+                primary_key=7,
+                required_field=False,
+            ),
         ]
         result = FormulaCalculation(data).calc()
         assert result == {
@@ -223,23 +243,21 @@ class TestGostR58952_3_2020:
                 definition_number=0,
                 symbol="",
                 formula="",
-                value="",
+                value=".",
                 primary_key=1,
                 round_to=0,
                 formula_check="",
                 round_with_zeros=False,
-                required_field=True,
             ),
             StringField(
                 definition_number=0,
                 symbol="",
                 formula="",
-                value="",
+                value=".",
                 primary_key=2,
                 round_to=0,
                 formula_check="",
                 round_with_zeros=False,
-                required_field=True,
             ),
             NumericField(
                 definition_number=1,
@@ -250,7 +268,6 @@ class TestGostR58952_3_2020:
                 round_to=-2,
                 formula_check="",
                 round_with_zeros=False,
-                required_field=True,
             ),
             NumericField(
                 definition_number=1,
@@ -261,7 +278,6 @@ class TestGostR58952_3_2020:
                 round_to=-2,
                 formula_check="",
                 round_with_zeros=False,
-                required_field=True,
             ),
             BoolField(
                 definition_number=1,
@@ -272,7 +288,6 @@ class TestGostR58952_3_2020:
                 round_to=0,
                 formula_check="",
                 round_with_zeros=False,
-                required_field=True,
             ),
             BoolField(
                 definition_number=1,
@@ -283,7 +298,6 @@ class TestGostR58952_3_2020:
                 round_to=0,
                 formula_check="",
                 round_with_zeros=False,
-                required_field=True,
             ),
             NumericField(
                 definition_number=1,
@@ -294,13 +308,12 @@ class TestGostR58952_3_2020:
                 round_to=-1,
                 formula_check="",
                 round_with_zeros=False,
-                required_field=True,
             ),
         ]
         result = FormulaCalculation(data).calc()
         assert result == {
-            1: "",
-            2: "",
+            1: ".",
+            2: ".",
             3: None,
             4: None,
             5: "False",

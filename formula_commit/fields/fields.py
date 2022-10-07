@@ -13,6 +13,7 @@ from formula_commit.components import (
 )
 from formula_commit.decimal_ import MDecimal
 from formula_commit.consts import FIRST_SYMBOL_BY_ELEMENT, null
+from formula_commit.types_ import Null
 
 if TYPE_CHECKING:
     from group import Group
@@ -149,7 +150,13 @@ class BaseField(IField, ABC):
                 token_value = subject.cm[token]  # смотреть __getitem__
                 self.formula = "".join(
                     parser.replace(
-                        self.formula, token, token_value, subject.cm.is_parent
+                        self.formula,
+                        token,
+                        # если значение имеет строковый тип, подставляем его представление
+                        repr(token_value)
+                        if isinstance(token_value, str)
+                        else token_value,
+                        subject.cm.is_parent,
                     )
                 )
         self.dependence = parser.elements_with_text(
@@ -172,7 +179,7 @@ class BaseField(IField, ABC):
             value = calculation(self.formula, **FUNC_CALLABLE)
             if isinstance(value, (int, float)):
                 value = MDecimal(str(value))
-            self._value = value  # TODO: проблема с переконвертацией
+            self.value = value
         except (SystemExit, Exception) as exc:
             raise ValueError(
                 f"Ошибка в формуле: symbol={self.symbol}, "
@@ -205,7 +212,7 @@ class BaseField(IField, ABC):
     def __repr__(self) -> str:
         return (
             f"definition_number={self.definition_number}, symbol={self.symbol}, "
-            f"formula={self.formula}, value={str(self._value)}, primary_key="
+            f"formula={self.formula}, value={str(self.value)}, primary_key="
             f"{self.primary_key}, round_to={self.round_to},"
             f" formula_check={self.__formula_check}, round_with_zeros="
             f"{self.__round_with_zeros}, required_field={self.required_field}"
@@ -213,7 +220,7 @@ class BaseField(IField, ABC):
 
     def _is_convert_to_int(self):
         return (
-            isinstance(self._value, MDecimal) and self._value.as_integer_ratio()[1] == 1
+            isinstance(self.value, MDecimal) and self.value.as_integer_ratio()[1] == 1
         )
 
 
@@ -239,14 +246,6 @@ class NumericField(BaseField):
             raise Exception from exc
 
     @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value):
-        self._value: str | MDecimal | int = self._convert_value(value)
-
-    @property
     def get_result_value(self):
         """
         метод для предоставления значения в результат расчета
@@ -270,44 +269,30 @@ class StringField(BaseField):
     Строковое поле
     """
 
-    def _convert_value(self, value) -> str | MDecimal | int:
+    def _convert_value(self, value) -> str | MDecimal | Null:
         try:
             return MDecimal(value)
         except InvalidOperation:
-            return repr(value)
+            return value
+        except TypeError as exc:
+            if value is null:
+                return null
+            raise ValueError(
+                "Не удалось изменить значение строкового поля на значение: " + value
+            ) from exc
 
     def calc(self):
         if isinstance(self._value, MDecimal):
             self._update_value_with_components()
-        if isinstance(self._value, str) and not self.is_value_repr():
-            self._value = repr(self._value)
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value):
-        self._value: str | MDecimal = self._convert_value(value)
 
     @property
     def get_result_value(self):
         """
         метод для предоставления значения в результат расчета
         """
-        if self.is_value_repr():
-            return self._value[1:-1]
         if self._is_convert_to_int():
             return str(int(self._value))
-        return str(self._value)
-
-    def is_value_repr(self):
-        return (
-            isinstance(self._value, str)
-            and len(self._value) > 1
-            and self._value[0] in ("'", '"')
-            and self._value[-1] in ("'", '"')
-        )
+        return str(self._value)  # кастит значение из MDecimal в str
 
     def __repr__(self) -> str:
         return f"StringField({super().__repr__()})"
@@ -320,14 +305,6 @@ class BoolField(BaseField):
 
     def calc(self):
         pass
-
-    @property
-    def value(self):
-        return self._value
-
-    @value.setter
-    def value(self, value):
-        self._value: str | MDecimal | int = self._convert_value(value)
 
     @property
     def get_result_value(self):
