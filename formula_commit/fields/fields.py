@@ -141,13 +141,40 @@ class BaseField(IField, ABC):
         return bool(self.formula and not self._value_only)
 
     def update(self, subject: "Group") -> None:
-        # заменяем зависимости, у которых есть значение
         self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
         for token in self.dependence:
             if token in subject.cm:  # сотреть __contains__
                 token_value = subject.cm[token]  # смотреть __getitem__
+                # заменяем зависимости, у которых есть значение
+                self.formula = "".join(
+                    parser.replace(
+                        self.formula,
+                        token,
+                        token_value,
+                        subject.cm.is_parent,
+                    )
+                )
+        self.dependence = parser.elements_with_text(
+            self.formula, FIRST_SYMBOL_BY_ELEMENT
+        )
+
+        # подписываемся на зависимости
+        for item in self.dependence:
+            subject.attach(self, item)
+
+        # если нет зависимостей записываем значения
+        if not self.dependence:
+            # расчет поля
+            self.formula_calculation()
+            # вызывает расчет поля и последовательное обновление полей
+            subject.calculation_current_field(self)
+
+    def update_with_elements(self, subject: "Group"):
+        for token in self.dependence:
+            if token in subject.cm.elements:
+                token_value = null
                 self.formula = "".join(
                     parser.replace(
                         self.formula,

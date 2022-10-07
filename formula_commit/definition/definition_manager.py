@@ -17,7 +17,7 @@ class DefinitionManager:
         definition.add_field(current_field)
         self._fields.append(current_field)
 
-        self._cm_parent[current_field.symbol] = []
+        self._cm_parent.elements.add(current_field.symbol)
 
     def separation_fields_by_definitions(self, data: list):
         for current_field in data:

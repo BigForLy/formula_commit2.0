@@ -181,20 +181,30 @@ class TestIfFunc:
             NumericField(symbol="@b", formula="@a", value="", round_to=-1, primary_key=4),
         ]
         result = FormulaCalculation(data).calc()
-        assert result == {1: "1", 2: "1", 3: "1"}, f"Неверное решение: {result}"
+        assert result == {1: "2", 2: "1", 3: "2", 4: "2"}, f"Неверное решение: {result}"
+
+    def test_formula_v5(self):
+        data = [
+            NumericField(symbol="@q", formula="@b", value="1", round_to=-1, primary_key=1),
+            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, definition_number=1, primary_key=2),
+            NumericField(symbol="@a", formula="if(@minexp_1 is not null, 1, 2)", value="", round_to=-1, primary_key=3),
+            NumericField(symbol="@b", formula="@a", value="", round_to=-1, primary_key=4),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "1", 2: "1", 3: "1", 4: "1"}, f"Неверное решение: {result}"
         
 
 class TestFieldInCommonBlock:
     @profile(precision=4)
     def test_two_definitions(self):
         data = [
-            NumericField(symbol="@a", value="2", formula="", primary_key=1),
-            NumericField(symbol="@b", value="", formula="avg(@c)", primary_key=2),
-            NumericField(symbol="@c", value="2", formula="", definition_number=1, primary_key=3),
-            NumericField(symbol="@c", value="4", formula="", definition_number=2, primary_key=4),
-            NumericField(symbol="@d", value="", formula="avg(@c) +   @a", primary_key=5),
-            NumericField(symbol="@p", value="", formula="avg(@c) +   @b", primary_key=6),
-            NumericField(symbol="@p", value="", formula="@d + @p", primary_key=7),
+            NumericField(symbol="@a", value="2", formula="", primary_key=1),  # common block
+            NumericField(symbol="@b", value="", formula="avg(@c)", primary_key=2),  # common block
+            NumericField(symbol="@c", value="2", formula="", definition_number=1, primary_key=3),  # assay block
+            NumericField(symbol="@c", value="4", formula="", definition_number=2, primary_key=4),  # assay block
+            NumericField(symbol="@d", value="", formula="avg(@c) +   @a", primary_key=5),  # common block
+            NumericField(symbol="@p", value="", formula="avg(@c) +   @b", primary_key=6),  # common block
+            NumericField(symbol="@o", value="", formula="@d + @p", primary_key=7),  # common block
         ]
         start_time = time.time()
         result = FormulaCalculation(data).calc()

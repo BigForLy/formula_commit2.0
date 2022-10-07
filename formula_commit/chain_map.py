@@ -1,19 +1,36 @@
-from collections import ChainMap
-from typing import Any, Dict, List, Tuple
+from collections import ChainMap, defaultdict
+from typing import Any, Dict, List, Set, Tuple
 from contextlib import contextmanager
 from formula_commit.consts import null
 
 
 class DefaultListChainMap(ChainMap):
     """
-    Превый элемент хранит значения всех остальных детей
+    Превый элемент, он же родитель, хранит значения всех остальных наследуемых
+    от него элементов, по другому детей
+
+    Определения обращаются к локальному хранилищу,
+    которое перестает использоваться когда рассчитывается последний элемент определения,
+    если поле по каким то причинам не может быть рассчитано, оно получает все
+    необходимые ему элементы из локального хранилища определения,
+    все остальные недостающие значения оно будет получать из глобального хранилища
     """
 
+    def __init__(self, *maps) -> None:
+        super().__init__(*maps)
+        self.elements: Set[str] = set()
+        # используем defaultdict
+        self.maps[0] = defaultdict(list)
+
     def __setitem__(self, key, value):
-        self.maps[0][key] = value
-        if len(self.maps) > 1:
+        if not self.is_parent:
+            self.maps[0][key] = value
+            # Если не родитель, то записываем в родителя значение
             mapping: Dict[str, List[Any]] = self.maps[-1]
             mapping[key].append(value)
+        else:
+            # результат вычисления всегда будет один, поэтому оборачиваем списком
+            self.maps[0][key] = [value]
 
     def __getitem__(self, key: object):
         if isinstance(key, str) and "_" in key and self.is_parent:
@@ -34,7 +51,7 @@ class DefaultListChainMap(ChainMap):
         result = super().__getitem__(key)
         if isinstance(result, List) and len(result) == 1 and result[0] is null:
             return null
-        # если значение имеет строковый тип, подставляем его представление
+        # если значение имеет строковый тип, подставляем его представление, чтобы в формуле была строка
         return repr(result) if isinstance(result, str) else result
 
     def __contains__(self, key: object) -> bool:

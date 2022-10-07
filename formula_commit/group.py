@@ -24,10 +24,13 @@ class GroupManager:
                 # Если обсерверы были в последней группе, возвращаем ошибку
                 if not self.group_list:
                     raise ObserversNotEmpty(group.pop_observers())
-                self.last_group.dq.extend(group.pop_observers())
+                self.parent_group.dq.extend(group.pop_observers())
 
     @property
-    def last_group(self):
+    def parent_group(self):
+        """
+        parent_group всегда последний в group_list
+        """
         return self.group_list[-1]
 
 
@@ -46,8 +49,19 @@ class Group(Subject):  # Group == Definition
             else:
                 self.calculation_current_field(current_field)
 
+        # Если родительская область видимости, то проверяем еще раз нерассчитанные поля
+        # параметры которых отсутствуют в родительской области видимости
+        # это может происходить при необязательном или незаполенном поле на которое указывает формула
+        if not self.is_observers_empty and self.cm.is_parent:
+            self.dq.extend(self.pop_observers())
+            while self.dq:
+                current_field: BaseField = self.dq.popleft()
+                current_field.update_with_elements(self)
+
+
     def calculation_current_field(self, current_field: BaseField):
         current_field.calc()
         self.cm.update({current_field.symbol: current_field.value})
+        # TODO: возможно объединить или вызывать внутри друг друга
         self.detach(current_field)  # type: ignore
         self.notify(current_field.symbol)

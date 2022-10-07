@@ -44,13 +44,20 @@ class ParserManager:
     ) -> Generator[str, None, None]:
         def _inner(param: str):
             if param.lower() == replacement_text.lower():
-                if all_ and not dq and isinstance(value, list) and not value:
+                # если меняем везде и нет открытых скобок и количество элементов 1
+                # то возвращаем представление единственного элемента
+                if all_ and not dq and isinstance(value, list) and len(value) == 1:
+                    yield repr(value[0])
+                    return
+                # если меняем везде и нет открытых скобок и значение является пустым списком
+                # то возвращаем null, для использования в формуле
+                elif all_ and not dq and isinstance(value, list) and not value:
                     yield repr(null)
                     return
-                if all_ or not dq:
-                    yield repr(value) if isinstance(
-                        value, (MDecimal, list, Null)
-                    ) else value
+                elif all_ or not dq:
+                    # все элементы кроме строки возвращаем при помощи их представления
+                    # для корректного использвоания в функции
+                    yield value if isinstance(value, str) else repr(value)
                     return
             yield param
 
