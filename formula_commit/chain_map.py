@@ -1,6 +1,7 @@
 from collections import ChainMap
 from typing import Any, Dict, List, Tuple
 from contextlib import contextmanager
+from formula_commit.consts import null
 
 
 class DefaultListChainMap(ChainMap):
@@ -27,11 +28,18 @@ class DefaultListChainMap(ChainMap):
                     "Что-то пошло не так! Значений меньше необходимого: " + key
                 )
             return xs[definition - 1]
-        return super().__getitem__(key)
+
+        result = super().__getitem__(key)
+        if isinstance(result, List) and len(result) == 1 and result[0] is null:
+            return null
+        return result
 
     def __contains__(self, key: object) -> bool:
         if isinstance(key, str) and "_" in key and self.is_parent:
             symbol, definition = self.__split_into_symbol_and_definition(key)
+            # TODO: в глобальной области видимости все знаечения лежат в списках,
+            # кроме тех полей у которых глобальная область видимости является родительской
+            # у таких полей значение не список
             return any(
                 symbol in m for m in self.maps[0] if len(self.maps[0][m]) >= definition
             )

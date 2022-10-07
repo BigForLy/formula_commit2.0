@@ -129,22 +129,24 @@ class BaseField(IField, ABC):
         self._value: str | MDecimal | int = self._convert_value(value)
 
     @property
+    def get_result_value(self):
+        """
+        метод для предоставления значения в результат расчета
+        """
+        return str(self.value)
+
+    @property
     def is_need_update(self) -> bool:
         return bool(self.formula and not self._value_only)
 
     def update(self, subject: "Group") -> None:
+        # заменяем зависимости, у которых есть значение
         self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
         for token in self.dependence:
             if token in subject.cm:  # сотреть __contains__
-                token_value = subject.cm[token]
-                if (
-                    isinstance(token_value, List)
-                    and len(token_value) == 1
-                    and token_value[0] is null
-                ):
-                    token_value = null
+                token_value = subject.cm[token]  # смотреть __getitem__
                 self.formula = "".join(
                     parser.replace(
                         self.formula, token, token_value, subject.cm.is_parent
@@ -153,11 +155,16 @@ class BaseField(IField, ABC):
         self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
+
+        # подписываемся на зависимости
         for item in self.dependence:
             subject.attach(self, item)
+
+        # если нет зависимостей записываем значения
         if not self.dependence:
+            # расчет поля
             self.formula_calculation()
-            # вызывает последовательное обновление полей
+            # вызывает расчет поля и последовательное обновление полей
             subject.calculation_current_field(self)
 
     def formula_calculation(self):
@@ -243,6 +250,17 @@ class NumericField(BaseField):
     def value(self, value):
         self._value: str | MDecimal | int = self._convert_value(value)
 
+    @property
+    def get_result_value(self):
+        """
+        метод для предоставления значения в результат расчета
+        """
+        if isinstance(self._value, NoneType):
+            return self._value
+        if self._is_convert_to_int():
+            return str(int(self._value))
+        return str(self._value)
+
     def calc(self):
         if self._value:
             self._update_value_with_components()
@@ -280,6 +298,17 @@ class StringField(BaseField):
     def value(self, value):
         self._value: str | MDecimal | int = self._convert_value(value)
 
+    @property
+    def get_result_value(self):
+        """
+        метод для предоставления значения в результат расчета
+        """
+        if self.value_is_repr():
+            return self._value[1:-1]
+        if self._is_convert_to_int():
+            return str(int(self._value))
+        return str(self._value)
+
     def value_is_repr(self):
         return (
             isinstance(self._value, str)
@@ -307,6 +336,13 @@ class BoolField(BaseField):
     @value.setter
     def value(self, value):
         self._value: str | MDecimal | int = self._convert_value(value)
+
+    @property
+    def get_result_value(self):
+        """
+        метод для предоставления значения в результат расчета
+        """
+        return "True" if self._value else "False"
 
     def _convert_value(self, value) -> str | MDecimal | int:
         if value in (True, 1, "True"):

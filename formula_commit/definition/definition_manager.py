@@ -38,5 +38,5 @@ class DefinitionManager:
     def get_values(self) -> dict:
         result = {}
         for current_field in self._fields:
-            result.update({current_field.primary_key: current_field.value})
+            result.update({current_field.primary_key: current_field.get_result_value})
         return result
