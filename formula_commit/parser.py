@@ -87,7 +87,7 @@ class ParserManager:
             else:
                 yield param
 
-        mysql_syntax = {"end", "then", "when", "else", "and", "is", "not"}
+        mysql_syntax = {"end", "then", "when", "else", "and", "or", "is", "not"}
         lower_python_func_name = {"sqrt"}
         lower_python_constants = {"null"}
         param = ""

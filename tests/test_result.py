@@ -129,6 +129,29 @@ class TestIfFunc:
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "2", 2: "3", 3: "3"}, f"Неверное решение: {result}"
+    
+
+    def test_formula_v1(self):
+        formula = (
+            "IF(@iexp_1 is not null AND @iexp_1>=@minexp AND\r\n"
+            "(@iexp_1<=@iexp_2 OR @iexp_2 is null OR @iexp_2=@minexp) AND\r\n"
+            "(@iexp_1<=@iexp_3 OR @iexp_3 is null OR @iexp_3=@minexp) AND\r\n"
+            "(@iexp_1<=@iexp_4 OR @iexp_4 is null OR @iexp_4=@minexp) AND\r\n"
+            "(@iexp_1<=@iexp_5 OR @iexp_5 is null OR @iexp_5=@minexp) AND\r\n"
+            "(@iexp_1<=@iexp_6 OR @iexp_6 is null OR @iexp_6=@minexp),@iexp_1,null)\r\n"
+        )
+        data = [
+            NumericField(symbol="@iexp_1", formula="", value="1", round_to=-1, primary_key=1),
+            NumericField(symbol="@iexp_2", formula="", value="1", round_to=-1, primary_key=2),
+            NumericField(symbol="@iexp_3", formula="", value="1", round_to=-1, primary_key=3),
+            NumericField(symbol="@iexp_4", formula="", value="1", round_to=-1, primary_key=4),
+            NumericField(symbol="@iexp_5", formula="", value="1", round_to=-1, primary_key=5),
+            NumericField(symbol="@iexp_6", formula="", value="1", round_to=-1, primary_key=6),
+            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=7),
+            NumericField(symbol="@a", formula=formula, value="1", round_to=-1, primary_key=8),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "1", 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "1"}, f"Неверное решение: {result}"
 
 
 class TestFieldInCommonBlock:
