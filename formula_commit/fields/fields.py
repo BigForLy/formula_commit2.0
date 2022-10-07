@@ -115,10 +115,10 @@ class BaseField(IField, ABC):
         return str(uuid.uuid4())
 
     def check_required_field(self):
-        if self.required_field and self.value in ("", None) and not self.formula:
+        if self.required_field and self._value in ("", None) and not self.formula:
             raise ValueError(
                 f"Не заполнено обязательное поле: "
-                f"(symbol: {self.symbol}, value: {self.value})"
+                f"(symbol: {self.symbol}, value: {self._value})"
             )
 
     @property
@@ -241,6 +241,17 @@ class NumericField(BaseField):
             ) from exc
         except Exception as exc:
             raise Exception from exc
+
+    @property
+    def value(self):
+        # в случае, если поле не обязательное для расчета используем null
+        if self._value == "":
+            return null
+        return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value: str | MDecimal | int = self._convert_value(value)
 
     @property
     def get_result_value(self):

@@ -48,15 +48,6 @@ class Group(Subject):  # Group == Definition
 
     def calculation_current_field(self, current_field: BaseField):
         current_field.calc()
-        self.cm.update(
-            {
-                current_field.symbol: (
-                    null
-                    if isinstance(current_field, NumericField)
-                    and current_field.value == ""
-                    else current_field.value
-                )
-            }
-        )
+        self.cm.update({current_field.symbol: current_field.value})
         self.detach(current_field)  # type: ignore
         self.notify(current_field.symbol)
