@@ -137,8 +137,8 @@ class BaseField(IField, ABC):
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
         for token in self.dependence:
-            if token in subject.cm.maps[0]:
-                token_value = subject.cm[token]  # переделать в __get_attribute__
+            if token in subject.cm:  # сотреть __contains__
+                token_value = subject.cm[token]
                 if (
                     isinstance(token_value, List)
                     and len(token_value) == 1
@@ -147,12 +147,14 @@ class BaseField(IField, ABC):
                     token_value = null
                 self.formula = "".join(
                     parser.replace(
-                        self.formula, token, token_value, subject.cm.is_parent()
+                        self.formula, token, token_value, subject.cm.is_parent
                     )
                 )
         self.dependence = parser.elements_with_text(
             self.formula, FIRST_SYMBOL_BY_ELEMENT
         )
+        for item in self.dependence:
+            subject.attach(self, item)
         if not self.dependence:
             self.formula_calculation()
             # вызывает последовательное обновление полей

@@ -1,5 +1,5 @@
 from collections import ChainMap
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 from contextlib import contextmanager
 
 
@@ -14,6 +14,39 @@ class DefaultListChainMap(ChainMap):
             mapping: Dict[str, List[Any]] = self.maps[-1]
             mapping[key].append(value)
 
+    def __getitem__(self, key: object):
+        if isinstance(key, str) and "_" in key and self.is_parent:
+            symbol, difinition = self.__split_into_symbol_and_definition(key)
+            xs = super().__getitem__(symbol)
+            if not isinstance(xs, List):
+                raise ValueError(
+                    "Что-то пошло не так! Ожидался список для ключа: " + key
+                )
+            if len(xs) < difinition:
+                raise ValueError(
+                    "Что-то пошло не так! Значений меньше необходимого: " + key
+                )
+            return xs[difinition - 1]
+        return super().__getitem__(key)
+
+    def __contains__(self, key: object) -> bool:
+        if isinstance(key, str) and "_" in key and self.is_parent:
+            symbol, difinition = self.__split_into_symbol_and_definition(key)
+            return any(
+                symbol in m for m in self.maps[0] if len(self.maps[0][m]) >= difinition
+            )
+        return any(key in m for m in self.maps[0])
+
+    def __split_into_symbol_and_definition(self, key: str) -> Tuple[str, int]:
+        try:
+            symbol, difinition = key.split("_")
+            difinition = int(difinition)
+        except ValueError as exc:
+            raise ValueError(
+                "Не удалось разделить символ и определение " + key
+            ) from exc
+        return symbol, difinition
+
     @contextmanager
     def child(self):
         yield self.new_child()
@@ -22,5 +55,6 @@ class DefaultListChainMap(ChainMap):
     def parent(self):
         yield self
 
+    @property
     def is_parent(self) -> bool:
         return len(self.maps) == 1

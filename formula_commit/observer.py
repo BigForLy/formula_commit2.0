@@ -14,6 +14,9 @@ class Subject:
         self._observers: Dict[str, List[Observer]] = defaultdict(list)
 
     def attach(self, observer: Observer, symbol: str):
+        """
+        подписывает поле observer на символьное обозначение symbol другого поля
+        """
         if observer not in self._observers[symbol]:
             self._observers[symbol].append(observer)
 

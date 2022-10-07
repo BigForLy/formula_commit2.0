@@ -130,7 +130,6 @@ class TestIfFunc:
         result = FormulaCalculation(data).calc()
         assert result == {1: "2", 2: "3", 3: "3"}, f"Неверное решение: {result}"
     
-
     def test_formula_v1(self):
         formula = (
             "IF(@iexp_1 is not null AND @iexp_1>=@minexp AND\r\n"
@@ -152,6 +151,31 @@ class TestIfFunc:
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "1", 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "1"}, f"Неверное решение: {result}"
+
+    def test_formula_v2(self):
+        formula = (
+            "(case when null<=2 then null\r\n"
+            "when null<6 AND null>2 then (null-@minexp)/(null-1)\r\n"
+            "when null>=6 then (null-@minexp-null)/(null-2) end)\r\n"
+        )
+        data = [
+            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=7),
+            NumericField(symbol="@a", formula=formula, value="1", round_to=-1, primary_key=8),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "1", 2: "1"}, f"Неверное решение: {result}"
+
+    def test_formula_v3(self):
+        formula = (
+            "if(@minexp_1 is not null, 1, 2)"
+        )
+        data = [
+            NumericField(symbol="@minexp", formula="", difinition=1, value="1", round_to=-1, primary_key=1),
+            NumericField(symbol="@a", formula=formula, value="", difinition=1, round_to=-1, primary_key=2),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "1", 2: "1"}, f"Неверное решение: {result}"
+        
 
 
 class TestFieldInCommonBlock:

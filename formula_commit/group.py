@@ -33,8 +33,8 @@ class GroupManager:
 
 class Group(Subject):  # Group == Definition
     def __init__(self, dq: Deque[BaseField], cm: DefaultListChainMap) -> None:
-        self.dq = dq
-        self.cm = cm
+        self.dq: Deque[BaseField] = dq
+        self.cm: DefaultListChainMap = cm
         super().__init__()
 
     def calc(self):
@@ -43,8 +43,6 @@ class Group(Subject):  # Group == Definition
             current_field.check_required_field()
             if current_field.is_need_update:
                 current_field.update(self)
-                for item in current_field.dependence:
-                    self.attach(current_field, item)
             else:
                 self.calculation_current_field(current_field)
 
