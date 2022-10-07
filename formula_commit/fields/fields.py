@@ -114,15 +114,15 @@ class BaseField(IField, ABC):
         return str(uuid.uuid4())
 
     def check_required_field(self):
-        if self.required_field and self._value in ("", None) and not self.formula:
+        if self.required_field and self.value in ("", None) and not self.formula:
             raise ValueError(
                 f"Не заполнено обязательное поле: "
-                f"(symbol: {self.symbol}, value: {self._value})"
+                f"(symbol: {self.symbol}, value: {self.value})"
             )
 
     @property
     def value(self):
-        return str(self._value)
+        return self._value
 
     @value.setter
     def value(self, value):
@@ -133,7 +133,7 @@ class BaseField(IField, ABC):
         """
         метод для предоставления значения в результат расчета
         """
-        return str(self.value)
+        return str(self._value)
 
     @property
     def is_need_update(self) -> bool:
@@ -172,7 +172,7 @@ class BaseField(IField, ABC):
             value = calculation(self.formula, **FUNC_CALLABLE)
             if isinstance(value, (int, float)):
                 value = MDecimal(str(value))
-            self._value = value
+            self._value = value  # TODO: проблема с переконвертацией
         except (SystemExit, Exception) as exc:
             raise ValueError(
                 f"Ошибка в формуле: symbol={self.symbol}, "
@@ -240,11 +240,7 @@ class NumericField(BaseField):
 
     @property
     def value(self):
-        if isinstance(self._value, NoneType):
-            return self._value
-        if self._is_convert_to_int():
-            return str(int(self._value))
-        return str(self._value)
+        return self._value
 
     @value.setter
     def value(self, value):
@@ -283,33 +279,29 @@ class StringField(BaseField):
     def calc(self):
         if isinstance(self._value, MDecimal):
             self._update_value_with_components()
-        if isinstance(self._value, str) and not self.value_is_repr():
+        if isinstance(self._value, str) and not self.is_value_repr():
             self._value = repr(self._value)
 
     @property
     def value(self):
-        if self.value_is_repr():
-            return self._value[1:-1]
-        if self._is_convert_to_int():
-            return str(int(self._value))
-        return str(self._value)
+        return self._value
 
     @value.setter
     def value(self, value):
-        self._value: str | MDecimal | int = self._convert_value(value)
+        self._value: str | MDecimal = self._convert_value(value)
 
     @property
     def get_result_value(self):
         """
         метод для предоставления значения в результат расчета
         """
-        if self.value_is_repr():
+        if self.is_value_repr():
             return self._value[1:-1]
         if self._is_convert_to_int():
             return str(int(self._value))
         return str(self._value)
 
-    def value_is_repr(self):
+    def is_value_repr(self):
         return (
             isinstance(self._value, str)
             and len(self._value) > 1
@@ -331,7 +323,7 @@ class BoolField(BaseField):
 
     @property
     def value(self):
-        return "True" if self._value else "False"
+        return self._value
 
     @value.setter
     def value(self, value):

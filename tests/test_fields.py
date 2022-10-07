@@ -42,13 +42,13 @@ def test_correct_bool_field(get_bool_field: BoolField):
 
 
 def test_correct_numeric_value(get_numeric_field: NumericField):
-    assert get_numeric_field._value == MDecimal("1.201"), get_numeric_field._value
+    assert get_numeric_field.value == MDecimal("1.201"), get_numeric_field.value
 
 
 def test_large_length_value(get_numeric_field_large_length_value: NumericField):
-    assert get_numeric_field_large_length_value._value == MDecimal(
+    assert get_numeric_field_large_length_value.value == MDecimal(
         "3.12121212"
-    ), get_numeric_field_large_length_value._value
+    ), get_numeric_field_large_length_value.value
 
 
 def test_incorrect_numeric_field_value():

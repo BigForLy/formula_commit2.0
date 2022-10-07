@@ -53,8 +53,8 @@ class Group(Subject):  # Group == Definition
                 current_field.symbol: (
                     null
                     if isinstance(current_field, NumericField)
-                    and current_field._value == ""
-                    else current_field._value
+                    and current_field.value == ""
+                    else current_field.value
                 )
             }
         )
