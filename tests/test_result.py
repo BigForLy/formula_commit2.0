@@ -219,6 +219,20 @@ class TestIfFunc:
             result = FormulaCalculation(data).calc()
         assert result == None, f"Неверное решение: {result}"
 
+    def test_formula_min_method(self):
+        """
+        Проверка функции Min
+        """
+        data = [
+            NumericField(symbol="@p", formula="min(@b)", value="0", round_to=-1, definition_number=2, primary_key=1),
+            NumericField(symbol="@b", formula="", definition_number=1, value="1", round_to=-1, primary_key=2),
+            NumericField(symbol="@b", formula="", definition_number=2, value="2", round_to=-1, primary_key=3),
+            NumericField(symbol="@b", formula="", definition_number=3, value="3", round_to=-1, primary_key=4),
+            NumericField(symbol="@b", formula="", definition_number=4, value="4", round_to=-1, primary_key=5),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "1", 2: "1", 3: "2", 4: "3", 5: "4"}, f"Неверное решение: {result}"
+
     def test_the_formula_itself_v1(self):
         # TODO: если ссылка на самого себя и значение не заполено что вывести? null/""? но у поля numeric не должно быть ""
         data = [

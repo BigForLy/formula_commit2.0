@@ -177,10 +177,6 @@ class MaxFunc(BaseFunc):
 
 
 class MinFunc(BaseFunc):
-    def __init__(self) -> None:
-        super().__init__()
-        self.is_global = False
-
     @check_nullable
     @return_first_if_once
     def __call__(self, *args: Tuple[str]) -> Any:
