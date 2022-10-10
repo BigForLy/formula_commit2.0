@@ -60,8 +60,9 @@ class BaseField(IField, ABC):
     ) -> None:
         self._calc_component: List[Type[IComponent]] = []
         self.required_field = required_field
-        self.formula = formula
         self.__symbol_update(symbol)
+        self.formula = formula
+        self.__check_formula()
         # изначально считаем, что поле рассчитывается по формуле
         self._value_only = False
         self.definition_number = definition_number
@@ -93,6 +94,10 @@ class BaseField(IField, ABC):
             symbol = self.__symbol_adjustment(symbol)
 
         self.symbol = symbol
+
+    def __check_formula(self):
+        if self.symbol in parser.elements_with_text(self.formula, self.symbol):
+            raise ValueError("Поле ссылается на само себя.")
 
     @staticmethod
     def __is_symbol_correct(symbol):

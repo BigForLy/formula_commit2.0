@@ -182,6 +182,32 @@ class TestIfFunc:
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "1", 2: "1", 3: "1", 4: "1"}, f"Неверное решение: {result}"
+
+    def test_formula_v5(self):
+        data = [
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, required_field=False, primary_key=1),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@exp)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
+            NumericField(symbol="@exp", formula="", value="1", round_to=-1, definition_number=1, primary_key=3),
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, required_field=False, primary_key=4),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@exp)\r\n", definition_number=2, value="", round_to=-1, primary_key=5),
+            NumericField(symbol="@exp", formula="", value="1", round_to=-1, definition_number=2, primary_key=6),
+            NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=7),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "", 2: "1", 3: "1", 4: "", 5: "1", 6: "1", 7: "1"}, f"Неверное решение: {result}"    
+
+    def test_formula_v6(self):
+        result = None
+        with suppress(ValueError):
+            data = [
+                NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, required_field=False, primary_key=1),
+                NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
+                NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, required_field=False, primary_key=3),
+                NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=2, value="", round_to=-1, primary_key=4),
+                NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
+            ]
+            result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"    
         
 
 class TestFieldInCommonBlock:
