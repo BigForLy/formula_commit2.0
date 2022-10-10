@@ -194,20 +194,30 @@ class TestIfFunc:
             NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=7),
         ]
         result = FormulaCalculation(data).calc()
-        assert result == {1: "", 2: "1", 3: "1", 4: "", 5: "1", 6: "1", 7: "1"}, f"Неверное решение: {result}"    
+        assert result == {1: "", 2: "1", 3: "1", 4: "", 5: "1", 6: "1", 7: "1"}, f"Неверное решение: {result}"
 
-    def test_formula_v6(self):
-        result = None
-        with suppress(ValueError):
-            data = [
-                NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, required_field=False, primary_key=1),
-                NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
-                NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, required_field=False, primary_key=3),
-                NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=2, value="", round_to=-1, primary_key=4),
-                NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
-            ]
-            result = FormulaCalculation(data).calc()
-        assert result == None, f"Неверное решение: {result}"    
+    def test_the_formula_itself_v1(self):
+        # TODO: если ссылка на самого себя и значение не заполено что вывести? null/""? но у поля numeric не должно быть ""
+        data = [
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, required_field=False, primary_key=1),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, required_field=False, primary_key=3),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=2, value="", round_to=-1, primary_key=4),
+            NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: '', 2: 'null', 3: '', 4: 'null', 5: 'null'}, f"Неверное решение: {result}"
+
+    def test_the_formula_itself_v2(self):
+        data = [
+            NumericField(symbol="@ign", formula="", value="50", round_to=-1, definition_number=1, primary_key=1),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", value="5", definition_number=1, round_to=-1, primary_key=2),
+            NumericField(symbol="@ign", formula="", value="60", round_to=-1, definition_number=2, primary_key=3),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", value="6", definition_number=2, round_to=-1, primary_key=4),
+            NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: '50', 2: '5', 3: '60', 4: '6', 5: '5.5'}, f"Неверное решение: {result}"
         
 
 class TestFieldInCommonBlock:

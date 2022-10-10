@@ -62,7 +62,6 @@ class BaseField(IField, ABC):
         self.required_field = required_field
         self.__symbol_update(symbol)
         self.formula = formula
-        self.__check_formula()
         # изначально считаем, что поле рассчитывается по формуле
         self._value_only = False
         self.definition_number = definition_number
@@ -94,10 +93,6 @@ class BaseField(IField, ABC):
             symbol = self.__symbol_adjustment(symbol)
 
         self.symbol = symbol
-
-    def __check_formula(self):
-        if self.symbol in parser.elements_with_text(self.formula, self.symbol):
-            raise ValueError("Поле ссылается на само себя.")
 
     @staticmethod
     def __is_symbol_correct(symbol):
@@ -227,6 +222,9 @@ class BaseField(IField, ABC):
         )
         # убираем лишние символы
         self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))
+        self.formula = "".join(
+            parser.replace(self.formula, self.symbol, self.value, True)
+        )
         self.formula = (
             self.formula.replace("=", "==")
             .replace("<==", "<=")

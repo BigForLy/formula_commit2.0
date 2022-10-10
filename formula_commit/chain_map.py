@@ -57,9 +57,6 @@ class DefaultListChainMap(ChainMap):
     def __contains__(self, key: object) -> bool:
         if isinstance(key, str) and "_" in key and self.is_parent:
             symbol, definition = self.__split_into_symbol_and_definition(key)
-            # TODO: в глобальной области видимости все знаечения лежат в списках,
-            # кроме тех полей у которых глобальная область видимости является родительской
-            # у таких полей значение не список
             return any(
                 symbol in m for m in self.maps[0] if len(self.maps[0][m]) >= definition
             )
