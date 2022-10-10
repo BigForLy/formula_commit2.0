@@ -185,10 +185,10 @@ class TestIfFunc:
 
     def test_formula_v5(self):
         data = [
-            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, required_field=False, primary_key=1),
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, is_required=False, primary_key=1),
             NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@exp)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
             NumericField(symbol="@exp", formula="", value="1", round_to=-1, definition_number=1, primary_key=3),
-            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, required_field=False, primary_key=4),
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, is_required=False, primary_key=4),
             NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@exp)\r\n", definition_number=2, value="", round_to=-1, primary_key=5),
             NumericField(symbol="@exp", formula="", value="1", round_to=-1, definition_number=2, primary_key=6),
             NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=7),
@@ -236,9 +236,9 @@ class TestIfFunc:
     def test_the_formula_itself_v1(self):
         # TODO: если ссылка на самого себя и значение не заполено что вывести? null/""? но у поля numeric не должно быть ""
         data = [
-            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, required_field=False, primary_key=1),
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, is_required=False, primary_key=1),
             NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
-            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, required_field=False, primary_key=3),
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, is_required=False, primary_key=3),
             NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=2, value="", round_to=-1, primary_key=4),
             NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
         ]
@@ -335,7 +335,7 @@ class TestIncorrectFormula:
         assert result == None, f"Неверное решение: {result}"
 
     def test_empty_value_in_calc(self):
-        data = [NumericField(symbol="@m", value="", definition_number="1", formula="", required_field=False, primary_key="1"),
+        data = [NumericField(symbol="@m", value="", definition_number="1", formula="", is_required=False, primary_key="1"),
 
                 NumericField(symbol="@av", formula="@m-1", value="", primary_key="2")]
         result = FormulaCalculation(data).calc()

@@ -54,12 +54,12 @@ class BaseField(IField, ABC):
         primary_key: Any,
         round_to: int = 0,
         formula_check: str = "",  # TODO: не реализованно
-        round_with_zeros: bool = False,
-        required_field: bool = True,
+        is_round_with_zeros: bool = False,
+        is_required: bool = True,
         **kwargs,
     ) -> None:
         self._calc_component: List[Type[IComponent]] = []
-        self.required_field = required_field
+        self.is_required = is_required
         self.__symbol_update(symbol)
         self.formula = formula
         # изначально считаем, что поле рассчитывается по формуле
@@ -71,7 +71,7 @@ class BaseField(IField, ABC):
 
         self.round_to = round_to
 
-        self.__round_with_zeros = round_with_zeros
+        self.__is_round_with_zeros = is_round_with_zeros
 
         self.__formula_check = formula_check
 
@@ -83,7 +83,7 @@ class BaseField(IField, ABC):
         """
         if self.round_to:
             self._calc_component.append(ConcreteComponentRoundTo)
-        if self.__round_with_zeros:
+        if self.__is_round_with_zeros:
             self._calc_component.append(ConcreteComponentRoundWithZero)
 
     def __symbol_update(self, symbol):
@@ -115,7 +115,7 @@ class BaseField(IField, ABC):
         return str(uuid.uuid4())
 
     def check_required_field(self):
-        if self.required_field and self._value in ("", None) and not self.formula:
+        if self.is_required and self._value in ("", None) and not self.formula:
             raise ValueError(
                 f"Не заполнено обязательное поле: "
                 f"(symbol: {self.symbol}, value: {self._value})"
@@ -242,7 +242,7 @@ class BaseField(IField, ABC):
             f"formula={self.formula}, value={str(self.value)}, primary_key="
             f"{self.primary_key}, round_to={self.round_to},"
             f" formula_check={self.__formula_check}, round_with_zeros="
-            f"{self.__round_with_zeros}, required_field={self.required_field}"
+            f"{self.__is_round_with_zeros}, required_field={self.is_required}"
         )
 
     def _is_convert_to_int(self):
@@ -288,8 +288,8 @@ class NumericField(BaseField):
         """
         метод для предоставления значения в результат расчета
         """
-        if isinstance(self._value, NoneType):
-            return self._value
+        if not self.is_required and self._value is null:
+            return ""
         if self._is_convert_to_int():
             return str(int(self._value))
         return str(self._value)

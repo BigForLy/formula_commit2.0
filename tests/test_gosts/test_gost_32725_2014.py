@@ -42,7 +42,7 @@ class TestGostR58952_3_2020:
                 formula="avg(@exp)",
                 round_to=-2,
                 primary_key=4,
-                required_field=False,
+                is_required=False,
             ),
             StringField(
                 symbol="r",
@@ -50,7 +50,7 @@ class TestGostR58952_3_2020:
                 formula="",
                 round_to=-2,
                 primary_key=5,
-                required_field=False,
+                is_required=False,
             ),
             StringField(
                 symbol="",
@@ -58,7 +58,7 @@ class TestGostR58952_3_2020:
                 formula="max(@exp)-min(@exp)",
                 round_to=-2,
                 primary_key=6,
-                required_field=False,
+                is_required=False,
             ),
             StringField(
                 symbol="",
@@ -66,7 +66,7 @@ class TestGostR58952_3_2020:
                 formula="",
                 round_to=0,
                 primary_key=7,
-                required_field=False,
+                is_required=False,
             ),
         ]
         result = FormulaCalculation(data).calc()
@@ -156,8 +156,8 @@ class TestGostR58952_3_2020:
                 primary_key=1,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
-                required_field=True,
+                is_round_with_zeros=False,
+                is_required=True,
             ),
             StringField(
                 definition_number=0,
@@ -167,8 +167,8 @@ class TestGostR58952_3_2020:
                 primary_key=2,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
-                required_field=True,
+                is_round_with_zeros=False,
+                is_required=True,
             ),
             BoolField(
                 definition_number=0,
@@ -178,8 +178,8 @@ class TestGostR58952_3_2020:
                 primary_key=3,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
-                required_field=True,
+                is_round_with_zeros=False,
+                is_required=True,
             ),
             BoolField(
                 definition_number=0,
@@ -189,8 +189,8 @@ class TestGostR58952_3_2020:
                 primary_key=4,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
-                required_field=True,
+                is_round_with_zeros=False,
+                is_required=True,
             ),
             NumericField(
                 definition_number=0,
@@ -200,8 +200,8 @@ class TestGostR58952_3_2020:
                 primary_key=5,
                 round_to=-2,
                 formula_check="",
-                round_with_zeros=False,
-                required_field=True,
+                is_round_with_zeros=False,
+                is_required=True,
             ),
             NumericField(
                 definition_number=0,
@@ -211,8 +211,8 @@ class TestGostR58952_3_2020:
                 primary_key=6,
                 round_to=-2,
                 formula_check="",
-                round_with_zeros=False,
-                required_field=True,
+                is_round_with_zeros=False,
+                is_required=True,
             ),
             NumericField(
                 definition_number=0,
@@ -222,8 +222,8 @@ class TestGostR58952_3_2020:
                 primary_key=7,
                 round_to=-1,
                 formula_check="",
-                round_with_zeros=False,
-                required_field=True,
+                is_round_with_zeros=False,
+                is_required=True,
             ),
         ]
         result = FormulaCalculation(data).calc()
@@ -247,7 +247,7 @@ class TestGostR58952_3_2020:
                 primary_key=1,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
+                is_round_with_zeros=False,
             ),
             StringField(
                 definition_number=0,
@@ -257,27 +257,27 @@ class TestGostR58952_3_2020:
                 primary_key=2,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
+                is_round_with_zeros=False,
             ),
             NumericField(
                 definition_number=1,
                 symbol="m",
                 formula="",
-                value=None,
+                value="",
                 primary_key=3,
                 round_to=-2,
                 formula_check="",
-                round_with_zeros=False,
+                is_round_with_zeros=False,
             ),
             NumericField(
                 definition_number=1,
                 symbol="m1",
                 formula="",
-                value=None,
+                value="",
                 primary_key=4,
                 round_to=-2,
                 formula_check="",
-                round_with_zeros=False,
+                is_round_with_zeros=False,
             ),
             BoolField(
                 definition_number=1,
@@ -287,7 +287,7 @@ class TestGostR58952_3_2020:
                 primary_key=5,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
+                is_round_with_zeros=False,
             ),
             BoolField(
                 definition_number=1,
@@ -297,7 +297,7 @@ class TestGostR58952_3_2020:
                 primary_key=6,
                 round_to=0,
                 formula_check="",
-                round_with_zeros=False,
+                is_round_with_zeros=False,
             ),
             NumericField(
                 definition_number=1,
@@ -307,15 +307,15 @@ class TestGostR58952_3_2020:
                 primary_key=7,
                 round_to=-1,
                 formula_check="",
-                round_with_zeros=False,
+                is_round_with_zeros=False,
             ),
         ]
         result = FormulaCalculation(data).calc()
         assert result == {
             1: ".",
             2: ".",
-            3: None,
-            4: None,
+            3: "",
+            4: "",
             5: "False",
             6: "True",
             7: "8.5",
