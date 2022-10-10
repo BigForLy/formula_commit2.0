@@ -1,6 +1,8 @@
 from __future__ import annotations
 from decimal import Context, Decimal
 
+from formula_commit.types_ import Null
+
 
 class MDecimal(Decimal):
     def __add__(self, other) -> MDecimal:
@@ -34,10 +36,12 @@ class MDecimal(Decimal):
         return MDecimal(super().__rmul__(other))
 
     def __truediv__(self, other) -> MDecimal:
+        if isinstance(other, Null):
+            return other
+
         if isinstance(other, float):
             return MDecimal(super().__truediv__(MDecimal(str(other))))
 
-        assert other != MDecimal("0"), "Деление на 0"
         return MDecimal(super().__truediv__(other))
 
     def __rtruediv__(self, other) -> MDecimal:

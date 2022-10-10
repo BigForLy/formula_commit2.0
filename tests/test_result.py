@@ -196,6 +196,29 @@ class TestIfFunc:
         result = FormulaCalculation(data).calc()
         assert result == {1: "", 2: "1", 3: "1", 4: "", 5: "1", 6: "1", 7: "1"}, f"Неверное решение: {result}"
 
+    def test_formula_null_div(self):
+        """
+        Деление на null
+        """
+        data = [
+            NumericField(symbol="@minexp", formula="100*MDecimal('60.0')/null", value="", round_to=-1, primary_key=1),
+            NumericField(symbol="@a", formula="@minexp", value="", round_to=-1, primary_key=2),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "null", 2: "null"}, f"Неверное решение: {result}"
+
+    def test_formula_zero_div(self):
+        """
+        Деление на 0
+        """
+        data = [
+            NumericField(symbol="@minexp", formula="100*MDecimal('60.0')/MDecimal('0.0')", value="", round_to=-1, primary_key=1),
+        ]
+        result = None
+        with suppress(ValueError):
+            result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"
+
     def test_the_formula_itself_v1(self):
         # TODO: если ссылка на самого себя и значение не заполено что вывести? null/""? но у поля numeric не должно быть ""
         data = [

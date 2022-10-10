@@ -9,6 +9,7 @@ def calculation(formula: str, **kwargs):
             "__builtins__": {"round": round},
             "MDecimal": MDecimal,
             "null": null,
+            # search in google: 
             # eval really is dangerous
             "os": ValueError,
             "__import__": ValueError,
