@@ -79,6 +79,10 @@ class CountFunc(BaseFunc):
 
 
 class IfNullFunc(BaseFunc):
+    def __init__(self) -> None:
+        super().__init__()
+        self.is_global = False
+
     def __call__(self, first_element, second_element, *args: Any) -> Any:
         if self.__check_in_correct(first_element):
             return first_element
