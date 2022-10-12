@@ -1,3 +1,6 @@
+"""
+компоненты, обрабатывающие результат, до или после расчета
+"""
 from abc import ABC, abstractmethod
 from decimal import localcontext
 from typing import TYPE_CHECKING
@@ -16,7 +19,7 @@ class IComponent(ABC):
         pass
 
 
-class ConcreteComponentRoundTo(IComponent):
+class ComponentRoundTo(IComponent):
     """
     округление
     """
@@ -41,7 +44,7 @@ class ConcreteComponentRoundTo(IComponent):
         return True
 
 
-class ConcreteComponentRoundWithZero(IComponent):
+class ComponentRoundWithZero(IComponent):
     """
     дополнение нулями после запятой
     """
@@ -49,3 +52,13 @@ class ConcreteComponentRoundWithZero(IComponent):
     def accept(self, visitor: "BaseField") -> str:
         if isinstance(visitor.value, MDecimal):
             visitor.value = f"{visitor.value:.{abs(visitor.round_to)}f}"
+
+
+class ComponentContrRoundWithZero(IComponent):
+    """
+    убирает лишние нули после запятой
+    """
+
+    def accept(self, visitor: "BaseField") -> str:
+        if isinstance(visitor.value, MDecimal):
+            visitor.value = visitor.value.normalize()

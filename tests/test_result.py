@@ -410,6 +410,15 @@ class TestIncorrectFormula:
         result = FormulaCalculation(data).calc()
         assert result == {1: '50', 2: '5', 3: '60', 4: '6', 5: '5.5'}, f"Неверное решение: {result}"
 
+    def test_the_formula_rounding(self):
+        formula = "if_((10*MDecimal('1')*MDecimal('0.95')*MDecimal('510.84')/MDecimal('100')) is null,MDecimal('48.53'),(10*MDecimal('1')*MDecimal('0.95')*MDecimal('510.84')/MDecimal('100'))) "
+        data = [
+            NumericField(symbol="@ign", formula=formula, value="50", round_to=-3, round_with_zeros=False, definition_number=1, primary_key=1),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: '48.53'}, f"Неверное решение: {result}"
+
+
 
 class TestOnlyResult:
     def test_1param_equals(self):

@@ -7,9 +7,10 @@ from formula_commit.functions import FUNC_CALLABLE
 from formula_commit.parser import ParserManager
 from formula_commit.calculation import calculation
 from formula_commit.components import (
-    ConcreteComponentRoundWithZero,
+    ComponentContrRoundWithZero,
+    ComponentRoundWithZero,
     IComponent,
-    ConcreteComponentRoundTo,
+    ComponentRoundTo,
 )
 from formula_commit.decimal_ import MDecimal
 from formula_commit.consts import FIRST_SYMBOL_BY_ELEMENT, null
@@ -82,9 +83,11 @@ class BaseField(IField, ABC):
         Устанавливает компоненты и их порядок
         """
         if self.round_to:
-            self._calc_component.append(ConcreteComponentRoundTo)
+            self._calc_component.append(ComponentRoundTo)
         if self.__is_round_with_zeros:
-            self._calc_component.append(ConcreteComponentRoundWithZero)
+            self._calc_component.append(ComponentRoundWithZero)
+        else:
+            self._calc_component.append(ComponentContrRoundWithZero)
 
     def __symbol_update(self, symbol):
         if self.__is_need_creating_symbol(symbol):

@@ -2,10 +2,8 @@ from collections import deque
 from typing import Deque
 from formula_commit.chain_map import DefaultListChainMap
 from formula_commit.errors import ObserversNotEmpty
-from formula_commit.fields import BaseField, NumericField
-from formula_commit.fields.fields import NumericField
+from formula_commit.fields import BaseField
 from formula_commit.observer import Subject
-from formula_commit.consts import null
 
 
 class GroupManager:
