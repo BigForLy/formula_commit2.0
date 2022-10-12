@@ -100,6 +100,12 @@ class TestOnly:
     def test_three_args_failture(self, only_func):
         assert (result := only_func([1, 1, 1, 2], "Yes", "No")) == "No", result
 
+    def test_one_args_v1(self, only_func):
+        assert (result := only_func(1, "No")) == 1, result
+
+    def test_one_args_v2(self, only_func):
+        assert (result := only_func(1, "Yes", "No")) == "Yes", result
+
 
 @pytest.fixture
 def count_func():

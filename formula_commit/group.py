@@ -58,10 +58,16 @@ class Group(Subject):  # Group == Definition
                 current_field: BaseField = self.dq.popleft()
                 current_field.update_with_elements(self)
 
-
     def calculation_current_field(self, current_field: BaseField):
         current_field.calc()
-        self.cm.update({current_field.symbol: current_field.value})
+        self.cm.update(
+            {
+                (
+                    current_field.symbol,
+                    current_field.definition_number,
+                ): current_field.value
+            }
+        )
         # TODO: возможно объединить или вызывать внутри друг друга
         self.detach(current_field)  # type: ignore
         self.notify(current_field.symbol)

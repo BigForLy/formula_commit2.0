@@ -1,3 +1,9 @@
+"""
+Функции отрабатывающие в формуле
+функции должны работать как со списком, так и с единственным не списковым аргементом
+"""
+
+
 from __future__ import with_statement
 from collections.abc import Iterable
 from typing import Any, List, SupportsFloat, SupportsIndex, Tuple
@@ -64,8 +70,10 @@ class IfFunc(BaseFunc):
 class OnlyFunc(BaseFunc):
     def __call__(self, *args: Tuple[Any]) -> Any:
         assert len(args) == 2 or len(args) == 3, f"Некоректная формула: {args=}"
-        if not args[0]:
+        if not args[0]:  # если длина списка 0
             return null
+        if not isinstance(args[0], list):  # если всего одного значение, а не список
+            return args[0] if len(args) == 2 else args[1]
         condition = len(set(args[0])) == 1
         success_result = args[0][0] if len(args) == 2 else args[1]
         failed_result = args[1] if len(args) == 2 else args[2]

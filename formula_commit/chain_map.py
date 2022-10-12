@@ -20,35 +20,34 @@ class DefaultListChainMap(ChainMap):
         super().__init__(*maps)
         self.elements: Set[str] = set()
         # используем defaultdict
-        self.maps[0] = defaultdict(list)
+        self.maps[0] = defaultdict(dict)
 
     def __setitem__(self, key, value):
+        # составной ключ, где key[0]-сивольное обозначение, key[1]-номер определения
+        key, definition = key[0], key[1]
         if not self.is_parent:
-            self.maps[0][key] = value
+            self.maps[0][key].update({definition: value})
             # Если не родитель, то записываем в родителя значение
-            mapping: Dict[str, List[Any]] = self.maps[-1]
-            mapping[key].append(value)
+            mapping: Dict[str, Dict[str, Any]] = self.maps[-1]
+            mapping[key].update({definition: value})
         else:
             # результат вычисления всегда будет один, поэтому оборачиваем списком
-            self.maps[0][key] = [value]
+            self.maps[0][key].update({definition: value})
 
     def __getitem__(self, key: object):
         if isinstance(key, str) and "_" in key and self.is_parent:
             symbol, definition = self.__split_into_symbol_and_definition(key)
             xs = super().__getitem__(symbol)
-            if not isinstance(xs, List):
+            if not isinstance(xs, Dict):
                 raise ValueError(
-                    "Что-то пошло не так! Ожидался список для ключа: " + key
-                )
-            if len(xs) < definition:
-                raise ValueError(
-                    "Что-то пошло не так! Значений меньше необходимого: " + key
+                    "Что-то пошло не так! Ожидался словарь для ключа: " + key
                 )
             # если значение имеет строковый тип, подставляем его представление
-            result = xs[definition - 1]
+            result = xs[definition]
             return repr(result) if isinstance(result, str) else result
 
-        result = super().__getitem__(key)
+        result: Dict[str, Any] = super().__getitem__(key)
+        result = result[0] if len(result := [m for m in result.values()]) == 1 else result
         if isinstance(result, List) and len(result) == 1 and result[0] is null:
             return null
         # если значение имеет строковый тип, подставляем его представление, чтобы в формуле была строка
@@ -58,7 +57,9 @@ class DefaultListChainMap(ChainMap):
         if isinstance(key, str) and "_" in key and self.is_parent:
             symbol, definition = self.__split_into_symbol_and_definition(key)
             return any(
-                symbol in m for m in self.maps[0] if len(self.maps[0][m]) >= definition
+                symbol in m
+                for m in self.maps[0]
+                if definition in self.maps[0][m].keys()
             )
         return any(key in m for m in self.maps[0])
 

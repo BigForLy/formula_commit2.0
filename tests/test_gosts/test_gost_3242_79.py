@@ -6,8 +6,8 @@ class TestGost3242_79:
 
     def test_Gost3242_79_v1(self):
         data = [
-            StringField(symbol="@x", value="Отсвутствуют", formula="", primary_key="1"),
-            StringField(symbol="@exp", value="", formula="@x", primary_key="2"),
+            StringField(symbol="@x", value="Отсвутствуют", formula="", definition_number="1", primary_key="1"),
+            StringField(symbol="@exp", value="", formula="@x", definition_number="1", primary_key="2"),
             StringField(symbol="@r", value="", formula="only(@exp, 'Разногласия в оценке')", primary_key="3")
         ]
         result = FormulaCalculation(data).calc()

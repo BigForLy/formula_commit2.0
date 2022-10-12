@@ -129,8 +129,36 @@ class TestIfFunc:
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "2", 2: "3", 3: "3"}, f"Неверное решение: {result}"
-    
+
     def test_formula_v1(self):
+        formula = ("if_(MDecimal('47.853') is not null and MDecimal('47.853')>=MDecimal('47.396') and "
+        "(MDecimal('47.853')<=MDecimal('48.530') or MDecimal('48.530') is null or MDecimal('48.530')=MDecimal('47.396')) and "
+        "(MDecimal('47.853')<=MDecimal('48.083') or MDecimal('48.083') is null or MDecimal('48.083')=MDecimal('47.396')) and "
+        "(MDecimal('47.853')<=MDecimal('48.069') or MDecimal('48.069') is null or MDecimal('48.069')=MDecimal('47.396')) and "
+        "(MDecimal('47.853')<=MDecimal('47.901') or MDecimal('47.901') is null or MDecimal('47.901')=MDecimal('47.396')) and "
+        "(MDecimal('47.853')<=MDecimal('47.396') or MDecimal('47.396') is null or MDecimal('47.396')=MDecimal('47.396')),"
+        "MDecimal('47.853'),null) ")
+        data = [
+            NumericField(symbol="@iexp", formula=formula, value="1", round_to=-1, primary_key=1),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "47.9"}, f"Неверное решение: {result}"
+
+    def test_formula_v2(self):
+        formula=("if_(MDecimal('48.069') is not null and MDecimal('48.069')>=MDecimal('47.396') and "
+        "(MDecimal('48.069')<=MDecimal('48.530') or MDecimal('48.530') is null or MDecimal('48.530')=MDecimal('47.396')) and "
+        "(MDecimal('48.069')<=MDecimal('48.083') or MDecimal('48.083') is null or MDecimal('48.083')=MDecimal('47.396')) and "
+        "(MDecimal('48.069')<=MDecimal('47.853') or MDecimal('47.853') is null or MDecimal('47.853')=MDecimal('47.396')) and "
+        "(MDecimal('48.069')<=MDecimal('47.901') or MDecimal('47.901') is null or MDecimal('47.901')=MDecimal('47.396')) and "
+        "(MDecimal('48.069')<=MDecimal('47.396') or MDecimal('47.396') is null or MDecimal('47.396')=MDecimal('47.396')),"
+        "MDecimal('48.069'),null) ")
+        data = [
+            NumericField(symbol="@iexp", formula=formula, value="1", round_to=-1, primary_key=1),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "null"}, f"Неверное решение: {result}"
+    
+    def test_formula_v3(self):
         formula = (
             "IF(@iexp_1 is not null AND @iexp_1>=@minexp AND\r\n"
             "(@iexp_1<=@iexp_2 OR @iexp_2 is null OR @iexp_2=@minexp) AND\r\n"
@@ -151,29 +179,29 @@ class TestIfFunc:
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "1", 2: "1", 3: "1", 4: "1", 5: "1", 6: "1", 7: "1", 8: "1"}, f"Неверное решение: {result}"
-
-    def test_formula_v2(self):
-        formula = (
-            "(case when null<=2 then null\r\n"
-            "when null<6 AND null>2 then (null-@minexp)/(null-1)\r\n"
-            "when null>=6 then (null-@minexp-null)/(null-2) end)\r\n"
-        )
+    
+    def test_formula_order_incorrect(self):
         data = [
-            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=1),
-            NumericField(symbol="@a", formula=formula, value="1", round_to=-1, primary_key=2),
+            NumericField(symbol="@iexp", formula="", value="4", round_to=-1, definition_number=4, primary_key=1),
+            NumericField(symbol="@iexp", formula="", value="2", round_to=-1, definition_number=2, primary_key=2),
+            NumericField(symbol="@iexp", formula="", value="3", round_to=-1, definition_number=3, primary_key=3),
+            NumericField(symbol="@iexp", formula="", value="1", round_to=-1, definition_number=1, primary_key=4),
+            NumericField(symbol="@iexp", formula="", value="6", round_to=-1, definition_number=6, primary_key=5),
+            NumericField(symbol="@iexp", formula="", value="5", round_to=-1, definition_number=5, primary_key=6),
+            NumericField(symbol="@a", formula="@iexp_4", value="4", round_to=-1, primary_key=7),
         ]
         result = FormulaCalculation(data).calc()
-        assert result == {1: "1", 2: "null"}, f"Неверное решение: {result}"
+        assert result == {1: "4", 2: "2", 3: "3", 4: "1", 5: "6", 6: "5", 7: "4"}, f"Неверное решение: {result}"
 
-    def test_formula_v3(self):
+    def test_formula_v4(self):
         data = [
-            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=1),
+            NumericField(symbol="@minexp", formula="", value="1", definition_number=1, round_to=-1, primary_key=1),
             NumericField(symbol="@a", formula="if(@minexp_1 is not null, 1, 2)", value="", round_to=-1, primary_key=2),
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "1", 2: "1"}, f"Неверное решение: {result}"
 
-    def test_formula_v4(self):
+    def test_formula_v5(self):
         data = [
             NumericField(symbol="@q", formula="@b", value="1", round_to=-1, primary_key=1),
             NumericField(symbol="@minexp", formula="", value="1", round_to=-1, definition_number=1, primary_key=2),
@@ -183,7 +211,7 @@ class TestIfFunc:
         result = FormulaCalculation(data).calc()
         assert result == {1: "1", 2: "1", 3: "1", 4: "1"}, f"Неверное решение: {result}"
 
-    def test_formula_v5(self):
+    def test_formula_v6(self):
         data = [
             NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, is_required=False, primary_key=1),
             NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@exp)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
@@ -195,66 +223,6 @@ class TestIfFunc:
         ]
         result = FormulaCalculation(data).calc()
         assert result == {1: "", 2: "1", 3: "1", 4: "", 5: "1", 6: "1", 7: "1"}, f"Неверное решение: {result}"
-
-    def test_formula_null_div(self):
-        """
-        Деление на null
-        """
-        data = [
-            NumericField(symbol="@minexp", formula="100*MDecimal('60.0')/null", value="", round_to=-1, primary_key=1),
-            NumericField(symbol="@a", formula="@minexp", value="", round_to=-1, primary_key=2),
-        ]
-        result = FormulaCalculation(data).calc()
-        assert result == {1: "null", 2: "null"}, f"Неверное решение: {result}"
-
-    def test_formula_zero_div(self):
-        """
-        Деление на 0
-        """
-        data = [
-            NumericField(symbol="@minexp", formula="100*MDecimal('60.0')/MDecimal('0.0')", value="", round_to=-1, primary_key=1),
-        ]
-        result = None
-        with suppress(ValueError):
-            result = FormulaCalculation(data).calc()
-        assert result == None, f"Неверное решение: {result}"
-
-    def test_formula_min_method(self):
-        """
-        Проверка функции Min
-        """
-        data = [
-            NumericField(symbol="@p", formula="min(@b)", value="0", round_to=-1, definition_number=2, primary_key=1),
-            NumericField(symbol="@b", formula="", definition_number=1, value="1", round_to=-1, primary_key=2),
-            NumericField(symbol="@b", formula="", definition_number=2, value="2", round_to=-1, primary_key=3),
-            NumericField(symbol="@b", formula="", definition_number=3, value="3", round_to=-1, primary_key=4),
-            NumericField(symbol="@b", formula="", definition_number=4, value="4", round_to=-1, primary_key=5),
-        ]
-        result = FormulaCalculation(data).calc()
-        assert result == {1: "1", 2: "1", 3: "2", 4: "3", 5: "4"}, f"Неверное решение: {result}"
-
-    def test_the_formula_itself_v1(self):
-        # TODO: если ссылка на самого себя и значение не заполено что вывести? null/""? но у поля numeric не должно быть ""
-        data = [
-            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, is_required=False, primary_key=1),
-            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
-            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, is_required=False, primary_key=3),
-            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=2, value="", round_to=-1, primary_key=4),
-            NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
-        ]
-        result = FormulaCalculation(data).calc()
-        assert result == {1: '', 2: 'null', 3: '', 4: 'null', 5: 'null'}, f"Неверное решение: {result}"
-
-    def test_the_formula_itself_v2(self):
-        data = [
-            NumericField(symbol="@ign", formula="", value="50", round_to=-1, definition_number=1, primary_key=1),
-            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", value="5", definition_number=1, round_to=-1, primary_key=2),
-            NumericField(symbol="@ign", formula="", value="60", round_to=-1, definition_number=2, primary_key=3),
-            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", value="6", definition_number=2, round_to=-1, primary_key=4),
-            NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
-        ]
-        result = FormulaCalculation(data).calc()
-        assert result == {1: '50', 2: '5', 3: '60', 4: '6', 5: '5.5'}, f"Неверное решение: {result}"
         
 
 class TestFieldInCommonBlock:
@@ -368,6 +336,79 @@ class TestIncorrectFormula:
         ]
         result = FormulaCalculation(data).calc()
         assert result == {'1': "Отсвутствуют", '2': 'Отсвутствуют', '3': 'Отсвутствуют'}, f"Неверное решение: {result}"
+
+    def test_formula_v1(self):
+        formula = (
+            "(case when null<=2 then null\r\n"
+            "when null<6 AND null>2 then (null-@minexp)/(null-1)\r\n"
+            "when null>=6 then (null-@minexp-null)/(null-2) end)\r\n"
+        )
+        data = [
+            NumericField(symbol="@minexp", formula="", value="1", round_to=-1, primary_key=1),
+            NumericField(symbol="@a", formula=formula, value="1", round_to=-1, primary_key=2),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "1", 2: "null"}, f"Неверное решение: {result}"
+
+    def test_formula_null_div(self):
+        """
+        Деление на null
+        """
+        data = [
+            NumericField(symbol="@minexp", formula="100*MDecimal('60.0')/null", value="", round_to=-1, primary_key=1),
+            NumericField(symbol="@a", formula="@minexp", value="", round_to=-1, primary_key=2),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "null", 2: "null"}, f"Неверное решение: {result}"
+
+    def test_formula_zero_div(self):
+        """
+        Деление на 0
+        """
+        data = [
+            NumericField(symbol="@minexp", formula="100*MDecimal('60.0')/MDecimal('0.0')", value="", round_to=-1, primary_key=1),
+        ]
+        result = None
+        with suppress(ValueError):
+            result = FormulaCalculation(data).calc()
+        assert result == None, f"Неверное решение: {result}"
+
+    def test_formula_min_method(self):
+        """
+        Проверка функции Min
+        """
+        data = [
+            NumericField(symbol="@p", formula="min(@b)", value="0", round_to=-1, definition_number=2, primary_key=1),
+            NumericField(symbol="@b", formula="", definition_number=1, value="1", round_to=-1, primary_key=2),
+            NumericField(symbol="@b", formula="", definition_number=2, value="2", round_to=-1, primary_key=3),
+            NumericField(symbol="@b", formula="", definition_number=3, value="3", round_to=-1, primary_key=4),
+            NumericField(symbol="@b", formula="", definition_number=4, value="4", round_to=-1, primary_key=5),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "1", 2: "1", 3: "2", 4: "3", 5: "4"}, f"Неверное решение: {result}"
+
+    def test_the_formula_itself_v1(self):
+        # TODO: если ссылка на самого себя и значение не заполено что вывести? null/""? но у поля numeric не должно быть ""
+        data = [
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=1, is_required=False, primary_key=1),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=1, value="", round_to=-1, primary_key=2),
+            NumericField(symbol="@ign", formula="", value="", round_to=-1, definition_number=2, is_required=False, primary_key=3),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", definition_number=2, value="", round_to=-1, primary_key=4),
+            NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: '', 2: 'null', 3: '', 4: 'null', 5: 'null'}, f"Неверное решение: {result}"
+
+    def test_the_formula_itself_v2(self):
+        data = [
+            NumericField(symbol="@ign", formula="", value="50", round_to=-1, definition_number=1, primary_key=1),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", value="5", definition_number=1, round_to=-1, primary_key=2),
+            NumericField(symbol="@ign", formula="", value="60", round_to=-1, definition_number=2, primary_key=3),
+            NumericField(symbol="@b", formula="if(@ign = 'Не учитывать',null,@b)\r\n", value="6", definition_number=2, round_to=-1, primary_key=4),
+            NumericField(symbol="@p", formula="avg(@b)", value="1", round_to=-1, definition_number=2, primary_key=5),
+        ]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: '50', 2: '5', 3: '60', 4: '6', 5: '5.5'}, f"Неверное решение: {result}"
 
 
 class TestOnlyResult:
