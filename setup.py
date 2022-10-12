@@ -7,7 +7,7 @@ with open("README.md") as f:
 setup(
     name="formula_commit",
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-    version="1.1.8",
+    version="1.1.9",
     license="MIT",
     license_files="LICENSE",
     author="BigForLy",

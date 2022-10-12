@@ -419,7 +419,6 @@ class TestIncorrectFormula:
         assert result == {1: '48.53'}, f"Неверное решение: {result}"
 
 
-
 class TestOnlyResult:
     def test_1param_equals(self):
         data = [StringField(symbol="@t", formula="", value="Привет", definition_number="1", primary_key="1"),

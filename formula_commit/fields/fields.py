@@ -331,6 +331,8 @@ class StringField(BaseField):
         """
         метод для предоставления значения в результат расчета
         """
+        if not self.is_required and self._value is null:
+            return ""
         if self._is_convert_to_int():
             return str(int(self._value))
         return str(self._value)  # кастит значение из MDecimal в str
