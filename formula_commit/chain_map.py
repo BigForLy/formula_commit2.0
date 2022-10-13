@@ -18,6 +18,7 @@ class DefaultListChainMap(ChainMap):
 
     def __init__(self, *maps) -> None:
         super().__init__(*maps)
+        # имена всех существующих полей, без упоминания определения
         self.elements: Set[str] = set()
         # используем defaultdict
         self.maps[0] = defaultdict(dict)
@@ -47,7 +48,13 @@ class DefaultListChainMap(ChainMap):
             return repr(result) if isinstance(result, str) else result
 
         result: Dict[str, Any] = super().__getitem__(key)
-        result = result[0] if len(result := [m for m in result.values()]) == 1 else result
+        # все значения лежат в словарях
+        # если значение в списке одно возвращаем значение а не список
+        # чтобы использовать его в формуле
+        # TODO: возможно переделать  механизм, не всегда нужно отдавать элемент не списком
+        result = (
+            result[0] if len(result := [m for m in result.values()]) == 1 else result
+        )
         if isinstance(result, List) and len(result) == 1 and result[0] is null:
             return null
         # если значение имеет строковый тип, подставляем его представление, чтобы в формуле была строка

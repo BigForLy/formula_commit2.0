@@ -164,8 +164,8 @@ class BaseField(IField, ABC):
         )
 
         # подписываемся на зависимости
-        for item in self.dependence:
-            subject.attach(self, item)
+        for token in self.dependence:
+            subject.attach(self, token)
 
         # если нет зависимостей записываем значения
         if not self.dependence:
@@ -191,8 +191,8 @@ class BaseField(IField, ABC):
         )
 
         # подписываемся на зависимости
-        for item in self.dependence:
-            subject.attach(self, item)
+        for token in self.dependence:
+            subject.attach(self, token)
 
         # если нет зависимостей записываем значения
         if not self.dependence:
@@ -223,8 +223,8 @@ class BaseField(IField, ABC):
         self.formula = "".join(
             parser.converter(self.formula, "case when", 'case_when("', ")", '")')
         )
-        # убираем лишние символы
-        self.formula = "".join(parser.replace(self.formula, "<>", "!=", True))
+        # формула может ссылаться на саму себя, в этом случае идет проверка введенных данных
+        # поэтому заменяем ссылку на себя значением
         self.formula = "".join(
             parser.replace(self.formula, self.symbol, self.value, True)
         )
@@ -272,8 +272,6 @@ class NumericField(BaseField):
             raise ValueError(
                 f"В числовое поле записана строка: symbol={self.symbol}"
             ) from exc
-        except Exception as exc:
-            raise Exception from exc
 
     @property
     def value(self):
