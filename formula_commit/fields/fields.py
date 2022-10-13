@@ -331,7 +331,7 @@ class StringField(BaseField):
         """
         if not self.is_required and self._value is null:
             return ""
-        if self._is_convert_to_int():
+        if self._is_convert_to_int() and not self._is_round_with_zeros:
             return str(int(self._value))
         return str(self._value)  # кастит значение из MDecimal в str
 
