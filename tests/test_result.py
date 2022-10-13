@@ -474,6 +474,12 @@ class TestEval:
             result = FormulaCalculation(data).calc()
         assert result == None, f"Неверное решение: {result}"
 
+    def test_result_fields_value_zero(self):
+        data = [NumericField(symbol="@a", formula="", value="0,0000", round_to=-4, primary_key=1, is_round_with_zeros=True)]
+        result = FormulaCalculation(data).calc()
+        assert result == {1: "0.0000"}, f"Неверное решение: {result}"
+
+
     def test_import(self):
         data = [NumericField(symbol="@b", formula="", value="4", definition_number="1", primary_key="1"),
                 StringField(symbol="@t", formula="@b + __import__('os').cpu_count()", value="Привет", definition_number="1", primary_key="2")]

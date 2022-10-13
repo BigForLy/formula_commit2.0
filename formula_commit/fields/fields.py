@@ -71,8 +71,8 @@ class BaseField(IField, ABC):
         self.value = value
 
         self.round_to = round_to
-
-        self.__is_round_with_zeros = is_round_with_zeros
+        # Дополнение нулями после запятой
+        self._is_round_with_zeros = is_round_with_zeros
 
         self.__formula_check = formula_check
 
@@ -84,7 +84,7 @@ class BaseField(IField, ABC):
         """
         if self.round_to:
             self._calc_component.append(ComponentRoundTo)
-        if self.__is_round_with_zeros:
+        if self._is_round_with_zeros:
             self._calc_component.append(ComponentRoundWithZero)
         else:
             self._calc_component.append(ComponentContrRoundWithZero)
@@ -245,7 +245,7 @@ class BaseField(IField, ABC):
             f"formula={self.formula}, value={str(self.value)}, primary_key="
             f"{self.primary_key}, round_to={self.round_to},"
             f" formula_check={self.__formula_check}, round_with_zeros="
-            f"{self.__is_round_with_zeros}, required_field={self.is_required}"
+            f"{self._is_round_with_zeros}, required_field={self.is_required}"
         )
 
     def _is_convert_to_int(self):
@@ -291,12 +291,12 @@ class NumericField(BaseField):
         """
         if not self.is_required and self._value is null:
             return ""
-        if self._is_convert_to_int():
+        if self._is_convert_to_int() and not self._is_round_with_zeros:
             return str(int(self._value))
         return str(self._value)
 
     def calc(self):
-        if self._value:
+        if isinstance(self._value, MDecimal):
             self._update_value_with_components()
 
     def __repr__(self) -> str:

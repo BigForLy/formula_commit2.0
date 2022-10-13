@@ -38,6 +38,7 @@ def get_numeric_field_big_int_value():
         symbol="@a", formula="", value=98_765, round_to=2, primary_key=1
     )
 
+
 @pytest.fixture
 def get_string_field():
     return StringField(
@@ -57,6 +58,7 @@ def test_large_length_value(get_numeric_field_large_length_value: NumericField):
     assert get_numeric_field_large_length_value.value == MDecimal(
         "3.12121212"
     ), get_numeric_field_large_length_value.value
+
 
 def test_null_value_in_result(get_string_field: StringField):
     get_string_field.value = null
